@@ -70,7 +70,6 @@ const App: () => Node = () => {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <Header />
       </ScrollView>
     </SafeAreaView>
   );
