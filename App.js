@@ -7,33 +7,41 @@
  */
 
 import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 
+import {Provider, useSelector} from 'react-redux';
+import store, {RootState} from './src/redux/store';
 import LoginScreen from './src/views/LoginScreen';
 import {Colors} from './src/constants';
+import HomeScreen from './src/views/HomeScreen';
 
-const App: () => Node = () => {
+const AppContent = () => {
+  const loginPressed = useSelector(state => state.auth.loginPressed);
   const backgroundStyle = {
     flex: 1,
     backgroundColor: Colors.backgroundColor,
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar backgroundColor={backgroundStyle.backgroundColor} />
-      <View style={backgroundStyle}>
-        <LoginScreen />
-      </View>
-    </SafeAreaView>
+    <View style={backgroundStyle}>
+      {loginPressed ? <HomeScreen /> : <LoginScreen />}
+    </View>
+  );
+};
+
+const App = () => {
+  const backgroundStyle = {
+    flex: 1,
+    backgroundColor: Colors.backgroundColor,
+  };
+
+  return (
+    <Provider store={store}>
+      <SafeAreaView style={backgroundStyle}>
+        <StatusBar backgroundColor={backgroundStyle.backgroundColor} />
+        <AppContent />
+      </SafeAreaView>
+    </Provider>
   );
 };
 
