@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import MyTextInput from '../components/MyTextInput';
 import MyButton from '../components/MyButton';
@@ -18,9 +18,9 @@ const LoginScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <View>
+      <View style={styles.containerLoginData}>
         <Text style={styles.label}>Username</Text>
-        <MyTextInput placeholder="Username" />
+        <MyTextInput placeholder="Username o email" />
         <Text style={styles.label}>Password</Text>
         <MyTextInput placeholder="Password" />
       </View>
@@ -37,9 +37,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     marginTop: 20,
   },
+  containerLoginData: {
+    backgroundColor: Colors.backgroundSurfaces,
+    padding: 20,
+    borderRadius: 15,
+  },
   label: {
     fontSize: 16,
-    color: Colors.textDark,
+    color: Colors.light,
     marginBottom: 8,
   },
 });
