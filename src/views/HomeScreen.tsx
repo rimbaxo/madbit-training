@@ -2,6 +2,7 @@ import React from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 import MyPost from '../components/MyPost';
 import MyUserHeader from '../components/MyUserHeader';
+import {Colors} from '../constants';
 
 const userInfo = {
   name: 'John Doe',
@@ -51,6 +52,7 @@ const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.backgroundColor,
   },
   postsContainer: {
     flex: 2,

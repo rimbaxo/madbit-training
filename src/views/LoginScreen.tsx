@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     flexDirection: 'column',
-    marginTop: 20,
+    backgroundColor: Colors.backgroundColor,
   },
   containerLoginData: {
     backgroundColor: Colors.backgroundSurfaces,

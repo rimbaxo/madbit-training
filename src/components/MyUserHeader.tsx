@@ -6,8 +6,6 @@ import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons'; // Im
 import {useDispatch} from 'react-redux';
 import {setLoginPressed} from '../redux/authSlice';
 
-// NOTA: HO USATO UNA VERSIONE DI REACT NATIVE SVG PRECEDENTE PERCHÈ MI DAVA ERRORE L'ULTIMA
-
 type HeaderProps = {
   name: string;
   email: string;
