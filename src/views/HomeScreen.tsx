@@ -2,8 +2,6 @@ import React from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 import MyPost from '../components/MyPost';
 import MyUserHeader from '../components/MyUserHeader';
-import LinearGradient from 'react-native-linear-gradient';
-import {Colors} from '../constants';
 
 const userInfo = {
   name: 'John Doe',
@@ -39,10 +37,6 @@ const HomeScreen: React.FC = () => {
         bio={userInfo.bio}
       />
       <View style={styles.postsContainer}>
-        <LinearGradient
-          colors={[Colors.backgroundColor, 'transparent', 'rgba(0,0,0,0)']}
-          style={styles.gradientTop}
-        />
         <FlatList
           data={posts}
           renderItem={renderPost}
@@ -50,10 +44,6 @@ const HomeScreen: React.FC = () => {
           showsVerticalScrollIndicator={false}
         />
       </View>
-      <LinearGradient
-        colors={['rgba(0,0,0,0)', 'transparent', Colors.backgroundColor]}
-        style={styles.gradientBottom}
-      />
     </View>
   );
 };
@@ -65,22 +55,6 @@ const styles = StyleSheet.create({
   postsContainer: {
     flex: 2,
     padding: 16,
-  },
-  gradientTop: {
-    elevation: 1,
-    zIndex: 1,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 100,
-  },
-  gradientBottom: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 200,
   },
 });
 
