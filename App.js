@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 
 import {
@@ -24,10 +24,8 @@ import HomeScreen from './src/views/HomeScreen';
 // NOTA: HO USATO REACT-NATIVE-SCREENS alla versione 3.24.0 per problemi di incompatibilità
 
 const AppContent = () => {
-  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+  const accessToken = useSelector(state => state.auth.accessToken);
   const insets = useSafeAreaInsets();
-
-  console.log("LOGINPRESSED", isLoggedIn)
 
   const backgroundStyle = {
     flex: 1,
@@ -40,7 +38,7 @@ const AppContent = () => {
 
   return (
     <View style={backgroundStyle}>
-      {isLoggedIn ? <HomeScreen /> : <LoginScreen />}
+      {accessToken ? <HomeScreen /> : <LoginScreen />}
     </View>
   );
 };

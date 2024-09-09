@@ -1,3 +1,5 @@
+import {Platform} from 'react-native';
+
 export const Colors = {
   lightRose: '#f4afc2',
   darkRose: '#f195ac',
@@ -10,3 +12,16 @@ export const Colors = {
   dark: '#0c0c0c',
   alert: '#f6bd60',
 };
+
+const IP_FOR_ANDROID = '10.0.2.2';
+const IP_FOR_IOS = 'localhost';
+
+const PORT = ':8080';
+const ENDPOINT = '/auth/login';
+const PROTOCOL = 'http://';
+
+export const BASE_URL =
+  PROTOCOL +
+  Platform.select({ios: IP_FOR_IOS, android: IP_FOR_ANDROID}) +
+  PORT +
+  ENDPOINT;

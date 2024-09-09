@@ -1,33 +1,36 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import MyTextInput from '../components/MyTextInput';
 import MyButton from '../components/MyButton';
-import {Colors} from '../constants';
+import {BASE_URL, Colors} from '../constants';
 import {useDispatch} from 'react-redux';
-import {setAccessToken, setIsLoggedIn } from '../redux/authSlice';
-import useLogin from '../utils/useLogin'
+import {setAccessToken} from '../redux/authSlice';
+import useFetch from '../hooks/useFetch';
 
 const LoginScreen: React.FC = () => {
+  const [username, setUsername] = useState<string>(
+    'testblog.aronnebrivio@dispostable.com',
+  );
+  const [password, setPassword] = useState<string>('password');
 
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-
-  const {login, loading, error, accessToken} = useLogin();
+  const {loading, error, data, fetchData} = useFetch(BASE_URL, 'POST', {
+    email: username,
+    password,
+  });
 
   const dispatch = useDispatch();
 
   const handleLogin = async () => {
+    await fetchData();
+  };
 
-    await login(username, password);
-
-    // Ha senso gestire lo stato della login in redux? pensaci.
-    if (accessToken) {
-      dispatch(setIsLoggedIn(true)); 
-      dispatch(setAccessToken(accessToken));
-       } else if (error) {
+  useEffect(() => {
+    if (data?.access_token) {
+      dispatch(setAccessToken(data?.access_token));
+    } else if (error) {
       Alert.alert('Errore di login', error);
     }
-  };
+  }, [data, error, loading]);
 
   return (
     <View style={styles.container}>
@@ -35,23 +38,25 @@ const LoginScreen: React.FC = () => {
         <Text style={styles.label}>Username</Text>
         <MyTextInput
           placeholder="Username o email"
-          onChangeText={(val) => {
-            setUsername(val)}
-          }
+          value={username}
+          onChangeText={val => {
+            setUsername(val);
+          }}
         />
         <Text style={styles.label}>Password</Text>
         <MyTextInput
           placeholder="Password"
-          onChangeText={(val) => {
-            setPassword(val)}
-          }
+          value={password}
+          onChangeText={val => {
+            setPassword(val);
+          }}
           secureTextEntry
         />
       </View>
       <MyButton
         title={loading ? 'Logging in...' : 'Login'}
         onPress={handleLogin}
-        disabled={loading} 
+        disabled={loading}
       />
     </View>
   );
