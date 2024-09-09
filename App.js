@@ -1,24 +1,27 @@
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ *
+ * @format
+ * @flow strict-local
+ */
+
 import React from 'react';
-import './gesture-handler-native';
-import {StatusBar, StyleSheet, View} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
+
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+
 import {Provider, useSelector} from 'react-redux';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-import store from './src/redux/store';
+import store, {RootState} from './src/redux/store';
 import LoginScreen from './src/views/LoginScreen';
-import HomeScreen from './src/views/HomeScreen';
 import {Colors} from './src/constants';
-import { createStackNavigator } from '@react-navigation/stack';
+import HomeScreen from './src/views/HomeScreen';
 
-const Stack = createStackNavigator();
-//const Stack = createNativeStackNavigator();
-
-
+// NOTA: HO USATO UNA VERSIONE DI REACT NATIVE SVG PRECEDENTE PERCHÈ MI DAVA ERRORE L'ULTIMA
+// NOTA: HO USATO REACT-NATIVE-SCREENS alla versione 3.30.0 per problemi di incompatibilità
 
 const AppContent = () => {
   const loginPressed = useSelector(state => state.auth.loginPressed);
@@ -35,15 +38,7 @@ const AppContent = () => {
 
   return (
     <View style={backgroundStyle}>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{headerShown: false}}>
-          {loginPressed ? (
-            <Stack.Screen name="Home" component={HomeScreen} />
-          ) : (
-            <Stack.Screen name="Login" component={LoginScreen} />
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
+      {loginPressed ? <HomeScreen /> : <LoginScreen />}
     </View>
   );
 };
@@ -64,6 +59,23 @@ const App = () => {
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  sectionContainer: {
+    marginTop: 32,
+    paddingHorizontal: 24,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+  },
+  sectionDescription: {
+    marginTop: 8,
+    fontSize: 18,
+    fontWeight: '400',
+  },
+  highlight: {
+    fontWeight: '700',
+  },
+});
 
 export default App;
