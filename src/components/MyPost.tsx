@@ -2,10 +2,10 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Colors} from '../constants';
 
-interface PostProps {
+type PostProps = {
   title: string;
   content: string;
-}
+};
 
 const MyPost: React.FC<PostProps> = ({title, content}) => {
   return (

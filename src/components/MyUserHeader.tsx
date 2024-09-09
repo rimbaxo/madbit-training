@@ -1,57 +1,74 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {Colors} from '../constants';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons'; // Importa l'icona specifica
+import {useDispatch} from 'react-redux';
+import {setLoginPressed} from '../redux/authSlice';
 
-interface HeaderProps {
+// NOTA: HO USATO UNA VERSIONE DI REACT NATIVE SVG PRECEDENTE PERCHÈ MI DAVA ERRORE L'ULTIMA
+
+type HeaderProps = {
   name: string;
   email: string;
   bio: string;
-}
+};
 
 const MyUserHeader: React.FC<HeaderProps> = ({name, email, bio}) => {
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-  /*
   const handleLogout = () => {
-    dispatch(setLoginPressed(false)); // Imposta loginPressed su false per tornare alla LoginScreen
+    dispatch(setLoginPressed(false));
   };
-*/
+
   return (
     <View style={styles.header}>
-      <View>
+      <View style={styles.infoContainer}>
         <Text style={styles.userName}>{name}</Text>
         <Text style={styles.userEmail}>{email}</Text>
         <Text style={styles.userBio}>{bio}</Text>
       </View>
-      {/*
-      <Pressable onPress={handleLogout}>
-        <Icon name="log-out" size={30} color="#000" />
+      <Pressable style={styles.iconContainer} onPress={handleLogout}>
+        <FontAwesomeIcon icon={faArrowRightFromBracket} color={Colors.dark} />
       </Pressable>
-      */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContents: 'space-between',
+    alignItems: 'flex-start',
     padding: 20,
-    backgroundColor: Colors.backgroundSurfaces,
+    backgroundColor: Colors.lightRose,
     borderRadius: 25,
-    margin: 16,
+    marginTop: 20,
+  },
+  infoContainer: {
+    flex: 1,
+  },
+  iconContainer: {
+    backgroundColor: Colors.azure,
+    padding: 10,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   userName: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: Colors.darkRose,
+    color: Colors.dark,
   },
   userEmail: {
     fontSize: 16,
-    color: Colors.light,
+    color: Colors.dark,
     marginBottom: 8,
   },
   userBio: {
     fontSize: 14,
-    color: Colors.light,
+    color: Colors.dark,
   },
 });
 

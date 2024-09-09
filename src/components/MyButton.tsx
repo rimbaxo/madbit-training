@@ -2,10 +2,10 @@ import React from 'react';
 import {Pressable, Text, StyleSheet, PressableProps} from 'react-native';
 import {Colors} from '../constants';
 
-interface CustomButtonProps extends PressableProps {
+type CustomButtonProps = PressableProps & {
   title: string;
   onPress: () => void;
-}
+};
 
 const MyButton: React.FC<CustomButtonProps> = ({title, onPress}) => {
   return (

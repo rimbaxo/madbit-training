@@ -2,9 +2,9 @@ import React from 'react';
 import {TextInput, StyleSheet, TextInputProps} from 'react-native';
 import {Colors} from '../constants';
 
-interface CustomTextInputProps extends TextInputProps {
+type CustomTextInputProps = TextInputProps & {
   placeholder: string;
-}
+};
 
 const MyTextInput: React.FC<CustomTextInputProps> = ({placeholder}) => {
   return (

@@ -1,9 +1,9 @@
 // src/redux/authSlice.ts
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-interface AuthState {
+type AuthState = {
   loginPressed: boolean;
-}
+};
 
 const initialState: AuthState = {
   loginPressed: false,

@@ -9,6 +9,11 @@
 import React from 'react';
 import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+
 import {Provider, useSelector} from 'react-redux';
 import store, {RootState} from './src/redux/store';
 import LoginScreen from './src/views/LoginScreen';
@@ -17,9 +22,15 @@ import HomeScreen from './src/views/HomeScreen';
 
 const AppContent = () => {
   const loginPressed = useSelector(state => state.auth.loginPressed);
+  const insets = useSafeAreaInsets();
+
   const backgroundStyle = {
     flex: 1,
     backgroundColor: Colors.backgroundColor,
+    paddingTop: insets.top,
+    paddingBottom: insets.bottom,
+    paddingLeft: insets.left,
+    paddingRight: insets.right,
   };
 
   return (
@@ -37,10 +48,10 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <SafeAreaView style={backgroundStyle}>
+      <SafeAreaProvider>
         <StatusBar backgroundColor={backgroundStyle.backgroundColor} />
         <AppContent />
-      </SafeAreaView>
+      </SafeAreaProvider>
     </Provider>
   );
 };
