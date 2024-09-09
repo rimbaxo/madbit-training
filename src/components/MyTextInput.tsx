@@ -6,12 +6,13 @@ type CustomTextInputProps = TextInputProps & {
   placeholder: string;
 };
 
-const MyTextInput: React.FC<CustomTextInputProps> = ({placeholder}) => {
+const MyTextInput: React.FC<CustomTextInputProps> = ({placeholder, onChangeText}) => {
   return (
     <TextInput
       style={styles.input}
       placeholder={placeholder}
       placeholderTextColor={Colors.lilla}
+      onChangeText={onChangeText}
     />
   );
 };

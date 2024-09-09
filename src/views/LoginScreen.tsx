@@ -1,30 +1,58 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, Alert} from 'react-native';
 import MyTextInput from '../components/MyTextInput';
 import MyButton from '../components/MyButton';
 import {Colors} from '../constants';
 import {useDispatch} from 'react-redux';
 import {setLoginPressed} from '../redux/authSlice';
+import useLogin from '../utils/useLogin'
 
 const LoginScreen: React.FC = () => {
-  //const [username, setUsername] = useState<string>('');
-  //const [password, setPassword] = useState<string>('');
+
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+
+  const {login, loading, error, accessToken} = useLogin();
 
   const dispatch = useDispatch();
 
-  const handleLogin = () => {
-    dispatch(setLoginPressed(true));
+  const handleLogin = async () => {
+
+    await login(username, password);
+
+    // Ha senso gestire lo stato della login in redux? pensaci.
+    if (accessToken) {
+      dispatch(setLoginPressed(true)); 
+      Alert.alert('Login riuscito!', `Access Token: ${accessToken}`);
+    } else if (error) {
+      Alert.alert('Errore di login', error);
+    }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.containerLoginData}>
         <Text style={styles.label}>Username</Text>
-        <MyTextInput placeholder="Username o email" />
+        <MyTextInput
+          placeholder="Username o email"
+          onChangeText={(val) => {
+            setUsername(val)}
+          }
+        />
         <Text style={styles.label}>Password</Text>
-        <MyTextInput placeholder="Password" />
+        <MyTextInput
+          placeholder="Password"
+          onChangeText={(val) => {
+            setPassword(val)}
+          }
+          secureTextEntry
+        />
       </View>
-      <MyButton title="Login" onPress={handleLogin} />
+      <MyButton
+        title={loading ? 'Logging in...' : 'Login'}
+        onPress={handleLogin}
+        disabled={loading} 
+      />
     </View>
   );
 };
