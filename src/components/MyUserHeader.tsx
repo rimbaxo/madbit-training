@@ -3,8 +3,7 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {Colors} from '../constants';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons'; // Importa l'icona specifica
-import {useDispatch} from 'react-redux';
-import {setLoginPressed} from '../redux/authSlice';
+import useLogin from '../utils/useLogin';
 
 type HeaderProps = {
   name: string;
@@ -13,10 +12,10 @@ type HeaderProps = {
 };
 
 const MyUserHeader: React.FC<HeaderProps> = ({name, email, bio}) => {
-  const dispatch = useDispatch();
+  const {logout} = useLogin();
 
   const handleLogout = () => {
-    dispatch(setLoginPressed(false));
+    logout();
   };
 
   return (

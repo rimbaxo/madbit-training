@@ -4,7 +4,7 @@ import MyTextInput from '../components/MyTextInput';
 import MyButton from '../components/MyButton';
 import {Colors} from '../constants';
 import {useDispatch} from 'react-redux';
-import {setLoginPressed} from '../redux/authSlice';
+import {setAccessToken, setIsLoggedIn } from '../redux/authSlice';
 import useLogin from '../utils/useLogin'
 
 const LoginScreen: React.FC = () => {
@@ -22,9 +22,9 @@ const LoginScreen: React.FC = () => {
 
     // Ha senso gestire lo stato della login in redux? pensaci.
     if (accessToken) {
-      dispatch(setLoginPressed(true)); 
-      Alert.alert('Login riuscito!', `Access Token: ${accessToken}`);
-    } else if (error) {
+      dispatch(setIsLoggedIn(true)); 
+      dispatch(setAccessToken(accessToken));
+       } else if (error) {
       Alert.alert('Errore di login', error);
     }
   };

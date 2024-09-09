@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setAccessToken, setIsLoggedIn } from '../redux/authSlice';
 
 type LoginResponse = {
   access_token: string;
@@ -14,6 +16,8 @@ type UseLoginState = {
 }
 
 const useLogin = () => {
+
+    const dispatch = useDispatch();
 
   const [state, setState] = useState<UseLoginState>({
     loading: false,
@@ -41,13 +45,17 @@ const useLogin = () => {
     };
 
     try {
-      const response = await fetch("http://192.168.1.191:8080/auth/login", requestOptions)
+    // Questo indirizzo IP sta ad indicare per i simulatori l'indirizzo della macchina locale sempre anche nel caso in cui l'IP cambi
+      const response = await fetch("http://10.0.2.2:8080/auth/login", requestOptions)
       console.log("RESPONSE", response)
       if (!response.ok) {
         console.log("response", await response.json())
         throw new Error('Failed to login');
       }
       const data: LoginResponse = await response.json();
+      
+      dispatch(setAccessToken(data.access_token));
+
 
       setState({
         loading: false,
@@ -68,9 +76,15 @@ const useLogin = () => {
     }
   };
 
+  const logout = () => {
+    dispatch(setAccessToken(null));
+    dispatch(setIsLoggedIn(false));
+  };
+
   return {
     ...state,
     login,
+    logout
   };
 };
 

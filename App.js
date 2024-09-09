@@ -21,11 +21,13 @@ import {Colors} from './src/constants';
 import HomeScreen from './src/views/HomeScreen';
 
 // NOTA: HO USATO UNA VERSIONE DI REACT NATIVE SVG PRECEDENTE PERCHÈ MI DAVA ERRORE L'ULTIMA
-// NOTA: HO USATO REACT-NATIVE-SCREENS alla versione 3.30.0 per problemi di incompatibilità
+// NOTA: HO USATO REACT-NATIVE-SCREENS alla versione 3.24.0 per problemi di incompatibilità
 
 const AppContent = () => {
-  const loginPressed = useSelector(state => state.auth.loginPressed);
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
   const insets = useSafeAreaInsets();
+
+  console.log("LOGINPRESSED", isLoggedIn)
 
   const backgroundStyle = {
     flex: 1,
@@ -38,7 +40,7 @@ const AppContent = () => {
 
   return (
     <View style={backgroundStyle}>
-      {loginPressed ? <HomeScreen /> : <LoginScreen />}
+      {isLoggedIn ? <HomeScreen /> : <LoginScreen />}
     </View>
   );
 };
