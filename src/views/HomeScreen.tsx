@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, StyleSheet, FlatList, Alert} from 'react-native';
-import MyPost from '../components/MyPost';
+import {View, StyleSheet, Alert} from 'react-native';
 import MyUserHeader from '../components/MyUserHeader';
 import {Colors, ENDPOINT_GETME} from '../constants';
 import {GetMeType} from '../types';
@@ -8,21 +7,7 @@ import useFetch from '../hooks/useFetch';
 import {useDispatch, useSelector} from 'react-redux';
 import {setUserInfo} from '../redux/authSlice';
 import {RootState} from '../redux/store';
-
-const posts = [
-  {id: '1', title: 'Post 1', content: 'This is the content of post 1.'},
-  {id: '2', title: 'Post 2', content: 'This is the content of post 2.'},
-  {id: '3', title: 'Post 3', content: 'This is the content of post 3.'},
-  {id: '4', title: 'Post 1', content: 'This is the content of post 1.'},
-  {id: '5', title: 'Post 2', content: 'This is the content of post 2.'},
-  {id: '6', title: 'Post 3', content: 'This is the content of post 3.'},
-  {id: '7', title: 'Post 1', content: 'This is the content of post 1.'},
-  {id: '8', title: 'Post 2', content: 'This is the content of post 2.'},
-  {id: '9', title: 'Post 3', content: 'This is the content of post 3.'},
-  {id: '10', title: 'Post 1', content: 'This is the content of post 1.'},
-  {id: '11', title: 'Post 2', content: 'This is the content of post 2.'},
-  {id: '12', title: 'Post 3', content: 'This is the content of post 3.'},
-];
+import MyPostList from '../components/MyPostList';
 
 const HomeScreen: React.FC = () => {
   const dispatch = useDispatch();
@@ -54,21 +39,12 @@ const HomeScreen: React.FC = () => {
     }
   }, [data, error, fullName, email, id, loading, dispatch]);
 
-  const renderPost = ({item}: {item: {title: string; content: string}}) => (
-    <MyPost title={item.title} content={item.content} />
-  );
-
   // Qui sarebbe bene usare degli skeleton, quando hai tempo vedi come implementare
   return (
     <View style={styles.container}>
       <MyUserHeader name={fullName || ''} email={email || ''} />
       <View style={styles.postsContainer}>
-        <FlatList
-          data={posts}
-          renderItem={renderPost}
-          keyExtractor={item => item.id}
-          showsVerticalScrollIndicator={false}
-        />
+        <MyPostList />
       </View>
     </View>
   );

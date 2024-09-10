@@ -4,14 +4,34 @@ import {Colors} from '../constants';
 
 type PostProps = {
   title: string;
-  content: string;
+  text: string;
+  created_at: string;
+  comments_count: number;
+  fullName: string;
 };
 
-const MyPost: React.FC<PostProps> = ({title, content}) => {
+const MyPost: React.FC<PostProps> = ({
+  title,
+  text,
+  created_at,
+  comments_count,
+  fullName,
+}) => {
+  console.log('Rendering post:', {
+    title,
+    text,
+    created_at,
+    comments_count,
+    fullName,
+  });
+
   return (
     <View style={styles.post}>
       <Text style={styles.postTitle}>{title}</Text>
-      <Text style={styles.postContent}>{content}</Text>
+      <Text style={styles.postContent}>{text}</Text>
+      <Text style={styles.info}>Created at: {created_at}</Text>
+      <Text style={styles.info}>Comments count: {comments_count}</Text>
+      <Text style={styles.info}>User: {fullName}</Text>
     </View>
   );
 };
@@ -32,6 +52,11 @@ const styles = StyleSheet.create({
   postContent: {
     fontSize: 16,
     color: Colors.light,
+  },
+  info: {
+    fontSize: 12,
+    color: '#555',
+    marginTop: 4,
   },
 });
 

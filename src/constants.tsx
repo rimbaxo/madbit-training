@@ -24,6 +24,8 @@ export const BASE_URL =
 
 export const ENDPOINT_LOGIN = '/auth/login';
 export const ENDPOINT_GETME = '/auth/me';
-export const ENDPOINT_POST = '/posts/user/';
+export const ENDPOINT_POST = '/posts';
 
-export const getUserPostsEndpoint = (userId: number) => ENDPOINT_POST + userId;
+/*
+export const getUserPostsEndpoint = (userId: number) =>
+  ENDPOINT_POST + userId.toString();*/
