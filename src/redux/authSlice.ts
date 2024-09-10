@@ -12,18 +12,21 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setAccessToken(state, action: PayloadAction<string | undefined>) {
+    setAccessToken(
+      state: AuthState,
+      action: PayloadAction<string | undefined>,
+    ) {
       state.accessToken = action.payload;
     },
     setUserInfo(
-      state,
+      state: AuthState,
       action: PayloadAction<{fullName: string; email: string; id: number}>,
     ) {
       state.fullName = action.payload.fullName;
       state.email = action.payload.email;
       state.id = action.payload.id;
     },
-    logout(state) {
+    logout(state: AuthState) {
       state.accessToken = undefined;
       state.fullName = undefined;
       state.email = undefined;

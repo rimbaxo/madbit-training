@@ -29,3 +29,18 @@ export const ENDPOINT_POST = '/posts';
 /*
 export const getUserPostsEndpoint = (userId: number) =>
   ENDPOINT_POST + userId.toString();*/
+
+export const formatReadableDate = (isoDate: string): string => {
+  const date = new Date(isoDate);
+
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  };
+
+  return date.toLocaleDateString('it-IT', options);
+};

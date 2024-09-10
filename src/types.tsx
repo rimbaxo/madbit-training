@@ -6,6 +6,12 @@ export type AuthState = {
   id: number | undefined;
 };
 
+export type PostsState = {
+  posts: PostType[];
+  loading: boolean;
+  error: string | null;
+};
+
 // TYPES PER IL LOGIN
 export type LoginResponse = {
   access_token: string;
@@ -47,4 +53,18 @@ export type PostType = {
     created_at: string;
     full_name: string;
   };
+};
+
+export type PostProps = {
+  title: string;
+  text: string;
+  created_at: string;
+  comments_count: number;
+  fullName: string;
+};
+
+// TYPES PER USERHEADER
+export type HeaderProps = {
+  name: string;
+  email: string;
 };

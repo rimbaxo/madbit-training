@@ -6,16 +6,21 @@ import {GetMeType} from '../types';
 import useFetch from '../hooks/useFetch';
 import {useDispatch, useSelector} from 'react-redux';
 import {setUserInfo} from '../redux/authSlice';
-import {RootState} from '../redux/store';
+import {AppDispatch, RootState} from '../redux/store';
 import MyPostList from '../components/MyPostList';
+import {useAppSelector} from '../hooks/useAppSelector';
 
 const HomeScreen: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const fullName = useSelector((state: RootState) => state.auth.fullName);
+  const fullName = useAppSelector(state => state.auth.fullName);
   const email = useSelector((state: RootState) => state.auth.email);
   const token = useSelector((state: RootState) => state.auth.accessToken);
   const id = useSelector((state: RootState) => state.auth.id);
+
+  // TODO: fare la fetch in MyUserHeader
+  // TODO: fare in modo che useFetch accetti un'oggetto di un tipo e poi in quell'oggetto passato ogni volta posso evitare di inserire il campo opzionale
+  // così mi evito di scrivere undefined
 
   const {loading, error, data, fetchData} = useFetch<GetMeType>(
     ENDPOINT_GETME,
@@ -24,8 +29,8 @@ const HomeScreen: React.FC = () => {
     token,
   );
 
-  // Per eliminare l'errore "Missing dependencies" ed includere fetchData fra le dipendenze dello useEffect ho racchiuso fetchData in una useCallback
   useEffect(() => {
+    // TODO: se i dati sono già presenti non ha senso rifare la fetch di nuovo, fai un controllo magari
     fetchData();
   }, [fetchData]);
 
@@ -39,7 +44,7 @@ const HomeScreen: React.FC = () => {
     }
   }, [data, error, fullName, email, id, loading, dispatch]);
 
-  // Qui sarebbe bene usare degli skeleton, quando hai tempo vedi come implementare
+  // TODO: sarebbe bene usare degli skeleton, quando hai tempo vedi come implementare
   return (
     <View style={styles.container}>
       <MyUserHeader name={fullName || ''} email={email || ''} />
@@ -57,7 +62,10 @@ const styles = StyleSheet.create({
   },
   postsContainer: {
     flex: 2,
-    padding: 16,
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingBottom: 16,
+    paddingTop: 8,
   },
 });
 

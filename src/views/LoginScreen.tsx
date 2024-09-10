@@ -3,10 +3,10 @@ import {View, Text, StyleSheet, Alert} from 'react-native';
 import MyTextInput from '../components/MyTextInput';
 import MyButton from '../components/MyButton';
 import {Colors, ENDPOINT_LOGIN} from '../constants';
-import {useDispatch} from 'react-redux';
 import {setAccessToken} from '../redux/authSlice';
 import useFetch from '../hooks/useFetch';
 import {LoginBody, LoginResponse} from '../types';
+import {useAppDispatch} from '../hooks/useAppDispatch';
 
 const LoginScreen: React.FC = () => {
   const [username, setUsername] = useState<string>(
@@ -14,16 +14,18 @@ const LoginScreen: React.FC = () => {
   );
   const [password, setPassword] = useState<string>('password');
 
+  const body: LoginBody = {
+    email: username,
+    password,
+  };
+
   const {loading, error, data, fetchData} = useFetch<LoginResponse, LoginBody>(
     ENDPOINT_LOGIN,
     'POST',
-    {
-      email: username,
-      password,
-    },
+    body,
   );
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleLogin = async () => {
     await fetchData();
@@ -39,9 +41,11 @@ const LoginScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <View />
       <View style={styles.containerLoginData}>
         <Text style={styles.label}>Username</Text>
         <MyTextInput
+          style={{height: 100}}
           placeholder="Username o email"
           value={username}
           onChangeText={val => {
@@ -59,7 +63,7 @@ const LoginScreen: React.FC = () => {
         />
       </View>
       <MyButton
-        title={loading ? 'Logging in...' : 'Login'}
+        title={loading ? '...LoGgInG iN...' : 'LoGiN'}
         onPress={handleLogin}
         disabled={loading}
       />
@@ -72,16 +76,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     paddingHorizontal: 16,
+    alignItems: 'center',
     flexDirection: 'column',
     backgroundColor: Colors.backgroundColor,
   },
   containerLoginData: {
-    backgroundColor: Colors.backgroundSurfaces,
     padding: 20,
     borderRadius: 15,
   },
   label: {
     fontSize: 16,
+    fontWeight: 'bold',
     color: Colors.light,
     marginBottom: 8,
   },

@@ -5,14 +5,11 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons'; // Importa l'icona specifica
 import {useDispatch} from 'react-redux';
 import {logout} from '../redux/authSlice';
-
-type HeaderProps = {
-  name: string;
-  email: string;
-};
+import {AppDispatch} from '../redux/store';
+import {HeaderProps} from '../types';
 
 const MyUserHeader: React.FC<HeaderProps> = ({name, email}) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleLogout = () => {
     dispatch(logout());
@@ -25,7 +22,10 @@ const MyUserHeader: React.FC<HeaderProps> = ({name, email}) => {
         <Text style={styles.userEmail}>{email}</Text>
       </View>
       <Pressable style={styles.iconContainer} onPress={handleLogout}>
-        <FontAwesomeIcon icon={faArrowRightFromBracket} color={Colors.dark} />
+        <FontAwesomeIcon
+          icon={faArrowRightFromBracket}
+          color={Colors.backgroundSurfaces}
+        />
       </Pressable>
     </View>
   );
@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     justifyContents: 'space-between',
     alignItems: 'flex-start',
     padding: 20,
-    marginTop: 20,
     borderBottomWidth: 5,
     borderBottomColor: Colors.darkRose,
     borderLeftColor: Colors.darkRose,
@@ -64,6 +63,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.light,
     marginBottom: 8,
+    opacity: 0.7,
   },
 });
 

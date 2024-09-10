@@ -17,6 +17,8 @@ const useFetch = <T, R = undefined>(
     data: undefined,
   });
 
+  // TODO: FARE USESELECTORE DEL TOKEN QUI DENTRO
+
   const fetchData = useCallback(async () => {
     // Qui devo mettere prevState altrimenti se usassi lo state del componente andrebbe ancora in loop infinito
     setState(prevState => ({

@@ -1,13 +1,7 @@
 // src/redux/postsSlice.ts
 
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {PostType} from '../types';
-
-type PostsState = {
-  posts: PostType[];
-  loading: boolean;
-  error: string | null;
-};
+import {PostsState, PostType} from '../types';
 
 const initialState: PostsState = {
   posts: [],
@@ -19,19 +13,19 @@ const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    setPosts(state, action: PayloadAction<PostType[]>) {
+    setPosts(state: PostsState, action: PayloadAction<PostType[]>) {
       state.posts = action.payload;
       state.loading = false;
       state.error = null;
     },
-    setLoading(state, action: PayloadAction<boolean>) {
+    setLoading(state: PostsState, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
-    setError(state, action: PayloadAction<string | null>) {
+    setError(state: PostsState, action: PayloadAction<string | null>) {
       state.error = action.payload;
       state.loading = false;
     },
-    clearPosts(state) {
+    clearPosts(state: PostsState) {
       state.posts = [];
     },
   },

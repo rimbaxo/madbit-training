@@ -24,6 +24,7 @@ const MyButton: React.FC<CustomButtonProps> = ({title, onPress}) => {
 
 const styles = StyleSheet.create({
   button: {
+    width: '50%',
     paddingVertical: 12,
     paddingHorizontal: 24,
     margin: 10,
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.azure,
   },
   buttonText: {
-    color: Colors.dark,
+    color: Colors.backgroundSurfaces,
     fontSize: 16,
     fontWeight: 'bold',
   },
