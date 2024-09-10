@@ -6,8 +6,8 @@
  * @flow strict-local
  */
 
-import React, {useEffect} from 'react';
-import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
+import React from 'react';
+import {StatusBar, StyleSheet, View} from 'react-native';
 
 import {
   SafeAreaProvider,
@@ -15,7 +15,7 @@ import {
 } from 'react-native-safe-area-context';
 
 import {Provider, useSelector} from 'react-redux';
-import store, {RootState} from './src/redux/store';
+import store from './src/redux/store';
 import LoginScreen from './src/views/LoginScreen';
 import {Colors} from './src/constants';
 import HomeScreen from './src/views/HomeScreen';

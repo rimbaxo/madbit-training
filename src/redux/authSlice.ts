@@ -1,11 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-type AuthState = {
-  accessToken: string | undefined;
-}
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {AuthState} from '../types';
 
 const initialState: AuthState = {
   accessToken: undefined,
+  fullName: undefined,
+  email: undefined,
+  id: undefined,
 };
 
 const authSlice = createSlice({
@@ -13,14 +13,24 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setAccessToken(state, action: PayloadAction<string | undefined>) {
-      console.log("ACTION", action.payload)
       state.accessToken = action.payload;
+    },
+    setUserInfo(
+      state,
+      action: PayloadAction<{fullName: string; email: string; id: number}>,
+    ) {
+      state.fullName = action.payload.fullName;
+      state.email = action.payload.email;
+      state.id = action.payload.id;
     },
     logout(state) {
       state.accessToken = undefined;
-    }
+      state.fullName = undefined;
+      state.email = undefined;
+      state.id = undefined;
+    },
   },
 });
 
-export const { setAccessToken, logout } = authSlice.actions;
+export const {setAccessToken, setUserInfo, logout} = authSlice.actions;
 export default authSlice.reducer;

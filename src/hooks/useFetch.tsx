@@ -1,48 +1,49 @@
-import {useState} from 'react';
-
-type LoginResponse = {
-  access_token: string;
-  token_type: string;
-  expires_in: number;
-};
-
-type UseFetchState = {
-  loading: boolean;
-  error: string | null;
-  data: any;
-};
+import {useCallback, useState} from 'react';
+import {BASE_URL} from '../constants';
+import {UseFetchState} from '../types';
 
 type FetchMethod = 'POST' | 'GET' | 'PUT' | 'DELETE';
 
-const useFetch = (endpoint: string, method: FetchMethod, body?: any) => {
-  const [state, setState] = useState<UseFetchState>({
+// Qui assegno di default il valore undefined al secondo tipo generico perchè nelle GET non ho il body
+const useFetch = <T, R = undefined>(
+  endpoint: string,
+  method: FetchMethod,
+  body?: R,
+  token?: string | undefined,
+) => {
+  const [state, setState] = useState<UseFetchState<T>>({
     loading: false,
     error: null,
     data: undefined,
   });
 
-  const fetchData = async () => {
-    setState({...state, loading: true, error: null});
+  const fetchData = useCallback(async () => {
+    // Qui devo mettere prevState altrimenti se usassi lo state del componente andrebbe ancora in loop infinito
+    setState(prevState => ({
+      ...prevState,
+      loading: true,
+      error: null,
+    }));
+
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      ...(token && {Authorization: `Bearer ${token}`}), // Aggiungo il token se presente
+    };
 
     const requestOptions: RequestInit = {
       method,
       body: body ? JSON.stringify(body) : undefined,
       redirect: 'follow',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
+      headers: headers,
     };
 
     try {
-      // Questo indirizzo IP sta ad indicare per i simulatori l'indirizzo della macchina locale sempre anche nel caso in cui l'IP cambia
-      const response = await fetch(endpoint, requestOptions);
+      const response = await fetch(BASE_URL + endpoint, requestOptions);
       if (!response.ok) {
         throw new Error('Failed to login');
       }
-      const data = await response.json();
-
-      //dispatch(setAccessToken(data.access_token));
+      const data: T = await response.json();
 
       setState({
         loading: false,
@@ -57,7 +58,7 @@ const useFetch = (endpoint: string, method: FetchMethod, body?: any) => {
         data: undefined,
       });
     }
-  };
+  }, [endpoint, method, body, token]);
 
   return {
     ...state,

@@ -3,22 +3,19 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {Colors} from '../constants';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons'; // Importa l'icona specifica
-import useLogin from '../hooks/useFetch';
-import { useDispatch } from 'react-redux';
-import { logout } from '../redux/authSlice';
+import {useDispatch} from 'react-redux';
+import {logout} from '../redux/authSlice';
 
 type HeaderProps = {
   name: string;
   email: string;
-  bio: string;
 };
 
-const MyUserHeader: React.FC<HeaderProps> = ({name, email, bio}) => {
-
-  const dispatch = useDispatch()
+const MyUserHeader: React.FC<HeaderProps> = ({name, email}) => {
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
-    dispatch(logout())
+    dispatch(logout());
   };
 
   return (
@@ -26,7 +23,6 @@ const MyUserHeader: React.FC<HeaderProps> = ({name, email, bio}) => {
       <View style={styles.infoContainer}>
         <Text style={styles.userName}>{name}</Text>
         <Text style={styles.userEmail}>{email}</Text>
-        <Text style={styles.userBio}>{bio}</Text>
       </View>
       <Pressable style={styles.iconContainer} onPress={handleLogout}>
         <FontAwesomeIcon icon={faArrowRightFromBracket} color={Colors.dark} />
@@ -65,10 +61,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.dark,
     marginBottom: 8,
-  },
-  userBio: {
-    fontSize: 14,
-    color: Colors.dark,
   },
 });
 

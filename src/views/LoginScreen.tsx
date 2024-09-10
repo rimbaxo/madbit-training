@@ -2,10 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import MyTextInput from '../components/MyTextInput';
 import MyButton from '../components/MyButton';
-import {BASE_URL, Colors} from '../constants';
+import {Colors, ENDPOINT_LOGIN} from '../constants';
 import {useDispatch} from 'react-redux';
 import {setAccessToken} from '../redux/authSlice';
 import useFetch from '../hooks/useFetch';
+import {LoginBody, LoginResponse} from '../types';
 
 const LoginScreen: React.FC = () => {
   const [username, setUsername] = useState<string>(
@@ -13,10 +14,14 @@ const LoginScreen: React.FC = () => {
   );
   const [password, setPassword] = useState<string>('password');
 
-  const {loading, error, data, fetchData} = useFetch(BASE_URL, 'POST', {
-    email: username,
-    password,
-  });
+  const {loading, error, data, fetchData} = useFetch<LoginResponse, LoginBody>(
+    ENDPOINT_LOGIN,
+    'POST',
+    {
+      email: username,
+      password,
+    },
+  );
 
   const dispatch = useDispatch();
 
@@ -30,7 +35,7 @@ const LoginScreen: React.FC = () => {
     } else if (error) {
       Alert.alert('Errore di login', error);
     }
-  }, [data, error, loading]);
+  }, [data, error, loading, dispatch]);
 
   return (
     <View style={styles.container}>
