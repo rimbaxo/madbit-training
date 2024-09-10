@@ -13,7 +13,7 @@ const MyPostList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const {posts} = useSelector((state: RootState) => state.posts);
-  const userId = useSelector((state: RootState) => state.auth.id);
+  //const userId = useSelector((state: RootState) => state.auth.id);
 
   const {error, data, fetchData} = useFetch<PostType[]>(ENDPOINT_POST, 'GET');
 
@@ -30,7 +30,7 @@ const MyPostList: React.FC = () => {
   }, [data, error, dispatch]);
 
   // credevo avesse senso invece filtra solo per i "propri" post. Sarebbe da filtrare per i post della gente che segui. Ma vabbè
-  const filteredPosts = posts.filter(post => post.user.id === userId);
+  //const filteredPosts = posts.filter(post => post.user.id === userId);
 
   const renderPost = ({item}: {item: PostType}) => (
     <MyPost
@@ -45,7 +45,7 @@ const MyPostList: React.FC = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={filteredPosts}
+        data={posts}
         renderItem={renderPost}
         keyExtractor={item => item.id.toString()}
         style={styles.list}

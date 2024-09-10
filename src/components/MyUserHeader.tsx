@@ -38,9 +38,12 @@ const styles = StyleSheet.create({
     justifyContents: 'space-between',
     alignItems: 'flex-start',
     padding: 20,
-    backgroundColor: Colors.lightRose,
-    borderRadius: 25,
     marginTop: 20,
+    borderBottomWidth: 5,
+    borderBottomColor: Colors.darkRose,
+    borderLeftColor: Colors.darkRose,
+    borderRightColor: Colors.darkRose,
+    borderTopColor: Colors.darkRose,
   },
   infoContainer: {
     flex: 1,
@@ -55,11 +58,11 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: Colors.dark,
+    color: Colors.lightRose,
   },
   userEmail: {
     fontSize: 16,
-    color: Colors.dark,
+    color: Colors.light,
     marginBottom: 8,
   },
 });

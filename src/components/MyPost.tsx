@@ -10,6 +10,8 @@ type PostProps = {
   fullName: string;
 };
 
+// Sarebbe bello implementare una funzione che fa allargare il post se si vuole vedere di più, mi serve tempo però non riesco immedita. Pensavo di si
+
 const MyPost: React.FC<PostProps> = ({
   title,
   text,
@@ -17,14 +19,6 @@ const MyPost: React.FC<PostProps> = ({
   comments_count,
   fullName,
 }) => {
-  console.log('Rendering post:', {
-    title,
-    text,
-    created_at,
-    comments_count,
-    fullName,
-  });
-
   return (
     <View style={styles.post}>
       <Text style={styles.postTitle}>{title}</Text>
@@ -42,6 +36,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundSurfaces,
     marginBottom: 16,
     borderRadius: 16,
+    overflow: 'hidden',
   },
   postTitle: {
     fontSize: 18,
