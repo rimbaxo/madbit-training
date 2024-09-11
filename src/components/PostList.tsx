@@ -7,9 +7,9 @@ import {ENDPOINT_POST} from '../constants';
 import {AppDispatch, RootState} from '../redux/store';
 import {useDispatch, useSelector} from 'react-redux';
 import {setPosts} from '../redux/postSlice';
-import MyPost from './MyPost';
+import Post from './Post';
 
-const MyPostList: React.FC = () => {
+const PostList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const {posts} = useSelector((state: RootState) => state.posts);
@@ -32,11 +32,10 @@ const MyPostList: React.FC = () => {
   // credevo avesse senso invece filtra solo per i "propri" post. Sarebbe da filtrare per i post della gente che segui. Ma vabbè
   //const filteredPosts = posts.filter(post => post.user.id === userId);
   // TODO: capire che su alcuni post, quelli creati da te, sarà possibile creare alcune operazioni CRUD
-  // TODO: rinomina i componenti togliendo il My
   // TODO: fai ricevere a mypost una sola prop di tipo Post e poi vai a fare il destructuring dentro al componente
 
   const renderPost = ({item}: {item: PostType}) => (
-    <MyPost
+    <Post
       title={item.title}
       created_at={item.created_at}
       text={item.text}
@@ -69,4 +68,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyPostList;
+export default PostList;

@@ -1,13 +1,13 @@
 import React, {useEffect} from 'react';
 import {View, StyleSheet, Alert} from 'react-native';
-import MyUserHeader from '../components/MyUserHeader';
+import UserHeader from '../components/UserHeader';
 import {Colors, ENDPOINT_GETME} from '../constants';
 import {GetMeType} from '../types';
 import useFetch from '../hooks/useFetch';
 import {useDispatch, useSelector} from 'react-redux';
 import {setUserInfo} from '../redux/authSlice';
 import {AppDispatch, RootState} from '../redux/store';
-import MyPostList from '../components/MyPostList';
+import PostList from '../components/PostList';
 import {useAppSelector} from '../hooks/useAppSelector';
 
 const HomeScreen: React.FC = () => {
@@ -47,9 +47,9 @@ const HomeScreen: React.FC = () => {
   // TODO: sarebbe bene usare degli skeleton, quando hai tempo vedi come implementare
   return (
     <View style={styles.container}>
-      <MyUserHeader name={fullName || ''} email={email || ''} />
+      <UserHeader name={fullName || ''} email={email || ''} />
       <View style={styles.postsContainer}>
-        <MyPostList />
+        <PostList />
       </View>
     </View>
   );

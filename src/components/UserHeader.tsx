@@ -8,7 +8,7 @@ import {logout} from '../redux/authSlice';
 import {AppDispatch} from '../redux/store';
 import {HeaderProps} from '../types';
 
-const MyUserHeader: React.FC<HeaderProps> = ({name, email}) => {
+const UserHeader: React.FC<HeaderProps> = ({name, email}) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleLogout = () => {
@@ -67,4 +67,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyUserHeader;
+export default UserHeader;

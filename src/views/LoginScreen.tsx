@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Alert} from 'react-native';
-import MyTextInput from '../components/MyTextInput';
-import MyButton from '../components/MyButton';
+import TextInputComponent from '../components/TextInputComponent';
+import Button from '../components/Button';
 import {Colors, ENDPOINT_LOGIN} from '../constants';
 import {setAccessToken} from '../redux/authSlice';
 import useFetch from '../hooks/useFetch';
@@ -44,7 +44,7 @@ const LoginScreen: React.FC = () => {
       <View />
       <View style={styles.containerLoginData}>
         <Text style={styles.label}>Username</Text>
-        <MyTextInput
+        <TextInputComponent
           style={{height: 100}}
           placeholder="Username o email"
           value={username}
@@ -53,7 +53,7 @@ const LoginScreen: React.FC = () => {
           }}
         />
         <Text style={styles.label}>Password</Text>
-        <MyTextInput
+        <TextInputComponent
           placeholder="Password"
           value={password}
           onChangeText={val => {
@@ -62,7 +62,7 @@ const LoginScreen: React.FC = () => {
           secureTextEntry
         />
       </View>
-      <MyButton
+      <Button
         title={loading ? '...LoGgInG iN...' : 'LoGiN'}
         onPress={handleLogin}
         disabled={loading}

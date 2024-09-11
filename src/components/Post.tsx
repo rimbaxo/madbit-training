@@ -5,7 +5,7 @@ import {PostProps} from '../types';
 
 // Sarebbe bello implementare una funzione che fa allargare il post se si vuole vedere di più, mi serve tempo però non riesco immedita. Pensavo di si
 
-const MyPost: React.FC<PostProps> = ({
+const Post: React.FC<PostProps> = ({
   title,
   text,
   created_at,
@@ -70,4 +70,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyPost;
+export default Post;

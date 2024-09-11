@@ -6,7 +6,7 @@ type CustomTextInputProps = TextInputProps & {
   placeholder: string;
 };
 
-const MyTextInput: React.FC<CustomTextInputProps> = ({...props}) => {
+const TextInputComponent: React.FC<CustomTextInputProps> = ({...props}) => {
   return (
     <TextInput
       {...props}
@@ -31,4 +31,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyTextInput;
+export default TextInputComponent;

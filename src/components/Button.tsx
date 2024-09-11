@@ -7,7 +7,7 @@ type CustomButtonProps = PressableProps & {
   onPress: () => void;
 };
 
-const MyButton: React.FC<CustomButtonProps> = ({title, onPress}) => {
+const Button: React.FC<CustomButtonProps> = ({title, onPress}) => {
   return (
     <Pressable
       onPress={onPress}
@@ -40,4 +40,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyButton;
+export default Button;
