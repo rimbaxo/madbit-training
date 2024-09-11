@@ -1,27 +1,27 @@
 // src/components/PostList.tsx
-import React, {useEffect} from 'react';
-import {Alert, FlatList, StyleSheet, View} from 'react-native';
-import {useDispatch} from 'react-redux';
-import {ENDPOINT_POST} from '../constants';
-import {useAppSelector} from '../hooks/useAppSelector';
+import React, { useEffect } from 'react';
+import { Alert, FlatList, StyleSheet, View } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { ENDPOINT_POST } from '../constants';
+import { useAppSelector } from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
-import {setPosts} from '../redux/postSlice';
-import {AppDispatch} from '../redux/store';
-import {FetchParams, PostType} from '../types';
+import { setPosts } from '../redux/postSlice';
+import { AppDispatch } from '../redux/store';
+import { FetchParams, PostType } from '../types';
 import Post from './Post';
 
 const PostList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const {posts} = useAppSelector(state => state.posts);
+  const { posts } = useAppSelector(state => state.posts);
   //const userId = useSelector((state: RootState) => state.auth.id);
 
   const fetchObj: FetchParams = {
     endpoint: ENDPOINT_POST,
-    method: 'GET',
+    method: 'GET'
   };
 
-  const {error, data, fetchData} = useFetch<PostType[]>(fetchObj);
+  const { error, data, fetchData } = useFetch<PostType[]>(fetchObj);
 
   // Il fetch avviene solo se i post non sono stati precedentemente caricati
   useEffect(() => {
@@ -42,7 +42,7 @@ const PostList: React.FC = () => {
   //const filteredPosts = posts.filter(post => post.user.id === userId);
   // TODO: capire che su alcuni post, quelli creati da te, sarà possibile creare alcune operazioni CRUD
 
-  const renderPost = ({item}: {item: PostType}) => <Post {...item} />;
+  const renderPost = ({ item }: { item: PostType }) => <Post {...item} />;
 
   return (
     <View style={styles.container}>
@@ -61,11 +61,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   list: {
-    flex: 1,
-  },
+    flex: 1
+  }
 });
 
 export default PostList;

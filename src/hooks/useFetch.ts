@@ -4,11 +4,7 @@ import { FetchParams, UseFetchState } from '../types';
 import { useAppSelector } from './useAppSelector';
 
 // Qui assegno di default il valore undefined al secondo tipo generico perchè nelle GET non ho il body
-const useFetch = <T, R = undefined>({
-  endpoint,
-  method,
-  body,
-}: FetchParams<R>) => {
+const useFetch = <T, R = undefined>({ endpoint, method, body }: FetchParams<R>) => {
   const [state, setState] = useState<UseFetchState<T>>({
     loading: false,
     error: null,
@@ -28,7 +24,7 @@ const useFetch = <T, R = undefined>({
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      ...(token && {Authorization: `Bearer ${token}`}), // Aggiungo il token se presente
+      ...(token && { Authorization: `Bearer ${token}` }), // Aggiungo il token se presente
     };
 
     const requestOptions: RequestInit = {
