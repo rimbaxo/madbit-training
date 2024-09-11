@@ -5,9 +5,6 @@ import UserHeader from '../components/UserHeader';
 import {Colors} from '../constants';
 
 const HomeScreen: React.FC = () => {
-  // TODO: fare in modo che useFetch accetti un'oggetto di un tipo e poi in quell'oggetto passato ogni volta posso evitare di inserire il campo opzionale
-  // così mi evito di scrivere undefined
-
   return (
     <View style={styles.container}>
       <UserHeader />

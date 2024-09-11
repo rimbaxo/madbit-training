@@ -9,7 +9,7 @@ import {useAppSelector} from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
 import {logout, setUserInfo} from '../redux/authSlice';
 import {AppDispatch} from '../redux/store';
-import {GetMeType} from '../types';
+import {FetchParams, GetMeType} from '../types';
 
 const UserHeader: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -19,12 +19,12 @@ const UserHeader: React.FC = () => {
   const token = useAppSelector(state => state.auth.accessToken);
   const id = useAppSelector(state => state.auth.id);
 
-  const {loading, error, data, fetchData} = useFetch<GetMeType>(
-    ENDPOINT_GETME,
-    'GET',
-    undefined,
-    token,
-  );
+  const fetchObj: FetchParams = {
+    endpoint: ENDPOINT_GETME,
+    method: 'GET',
+  };
+
+  const {loading, error, data, fetchData} = useFetch<GetMeType>(fetchObj);
 
   // Il fetch avviene solo se manca uno dei dati sottostanti
   useEffect(() => {

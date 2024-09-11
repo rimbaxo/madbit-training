@@ -7,7 +7,7 @@ import {useAppSelector} from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
 import {setPosts} from '../redux/postSlice';
 import {AppDispatch} from '../redux/store';
-import {PostType} from '../types';
+import {FetchParams, PostType} from '../types';
 import Post from './Post';
 
 const PostList: React.FC = () => {
@@ -16,7 +16,12 @@ const PostList: React.FC = () => {
   const {posts} = useAppSelector(state => state.posts);
   //const userId = useSelector((state: RootState) => state.auth.id);
 
-  const {error, data, fetchData} = useFetch<PostType[]>(ENDPOINT_POST, 'GET');
+  const fetchObj: FetchParams = {
+    endpoint: ENDPOINT_POST,
+    method: 'GET',
+  };
+
+  const {error, data, fetchData} = useFetch<PostType[]>(fetchObj);
 
   // Il fetch avviene solo se i post non sono stati precedentemente caricati
   useEffect(() => {
@@ -36,17 +41,8 @@ const PostList: React.FC = () => {
   // credevo avesse senso invece filtra solo per i "propri" post. Sarebbe da filtrare per i post della gente che segui. Ma vabbè
   //const filteredPosts = posts.filter(post => post.user.id === userId);
   // TODO: capire che su alcuni post, quelli creati da te, sarà possibile creare alcune operazioni CRUD
-  // TODO: fai ricevere a mypost una sola prop di tipo Post e poi vai a fare il destructuring dentro al componente
 
-  const renderPost = ({item}: {item: PostType}) => (
-    <Post
-      title={item.title}
-      created_at={item.created_at}
-      text={item.text}
-      comments_count={item.comments_count}
-      fullName={item.user.full_name}
-    />
-  );
+  const renderPost = ({item}: {item: PostType}) => <Post {...item} />;
 
   return (
     <View style={styles.container}>

@@ -1,23 +1,21 @@
-import {useCallback, useState} from 'react';
-import {BASE_URL} from '../constants';
-import {UseFetchState} from '../types';
-
-type FetchMethod = 'POST' | 'GET' | 'PUT' | 'DELETE';
+import { useCallback, useState } from 'react';
+import { BASE_URL } from '../constants';
+import { FetchParams, UseFetchState } from '../types';
+import { useAppSelector } from './useAppSelector';
 
 // Qui assegno di default il valore undefined al secondo tipo generico perchè nelle GET non ho il body
-const useFetch = <T, R = undefined>(
-  endpoint: string,
-  method: FetchMethod,
-  body?: R,
-  token?: string | undefined,
-) => {
+const useFetch = <T, R = undefined>({
+  endpoint,
+  method,
+  body,
+}: FetchParams<R>) => {
   const [state, setState] = useState<UseFetchState<T>>({
     loading: false,
     error: null,
     data: undefined,
   });
 
-  // TODO: FARE USESELECTORE DEL TOKEN QUI DENTRO
+  const token = useAppSelector(stato => stato.auth.accessToken);
 
   const fetchData = useCallback(async () => {
     // Qui devo mettere prevState altrimenti se usassi lo state del componente andrebbe ancora in loop infinito

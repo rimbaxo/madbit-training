@@ -68,3 +68,12 @@ export type HeaderProps = {
   name: string;
   email: string;
 };
+
+// TYPES PER USEFETCH
+export type FetchMethod = 'POST' | 'GET' | 'PUT' | 'DELETE';
+
+export type FetchParams<R = undefined> = {
+  endpoint: string;
+  method: FetchMethod;
+  body?: R;
+};

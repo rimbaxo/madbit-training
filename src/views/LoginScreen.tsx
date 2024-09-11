@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Alert} from 'react-native';
-import TextInputComponent from '../components/TextInputComponent';
+import {Alert, StyleSheet, Text, View} from 'react-native';
 import Button from '../components/Button';
+import TextInputComponent from '../components/TextInputComponent';
 import {Colors, ENDPOINT_LOGIN} from '../constants';
-import {setAccessToken} from '../redux/authSlice';
-import useFetch from '../hooks/useFetch';
-import {LoginBody, LoginResponse} from '../types';
 import {useAppDispatch} from '../hooks/useAppDispatch';
+import useFetch from '../hooks/useFetch';
+import {setAccessToken} from '../redux/authSlice';
+import {FetchParams, LoginBody, LoginResponse} from '../types';
 
 const LoginScreen: React.FC = () => {
   const [username, setUsername] = useState<string>(
@@ -19,10 +19,14 @@ const LoginScreen: React.FC = () => {
     password,
   };
 
-  const {loading, error, data, fetchData} = useFetch<LoginResponse, LoginBody>(
-    ENDPOINT_LOGIN,
-    'POST',
+  const fetchObj: FetchParams<LoginBody> = {
+    endpoint: ENDPOINT_LOGIN,
+    method: 'POST',
     body,
+  };
+
+  const {loading, error, data, fetchData} = useFetch<LoginResponse, LoginBody>(
+    fetchObj,
   );
 
   const dispatch = useAppDispatch();

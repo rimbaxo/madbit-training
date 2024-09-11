@@ -1,21 +1,17 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {Colors, formatReadableDate} from '../constants';
-import {PostProps} from '../types';
+import {PostType} from '../types';
 
 // Sarebbe bello implementare una funzione che fa allargare il post se si vuole vedere di più, mi serve tempo però non riesco immedita. Pensavo di si
 
-const Post: React.FC<PostProps> = ({
-  title,
-  text,
-  created_at,
-  comments_count,
-  fullName,
-}) => {
+const Post: React.FC<PostType> = (item: PostType) => {
+  const {user, created_at, title, text, comments_count} = item;
+
   return (
     <View style={styles.post}>
       <View style={styles.userPostTopInfo}>
-        <Text style={styles.userName}>{fullName}</Text>
+        <Text style={styles.userName}>{user.full_name}</Text>
         <Text style={styles.info}>{formatReadableDate(created_at)}</Text>
       </View>
       <View style={styles.postSeparatorLine} />
