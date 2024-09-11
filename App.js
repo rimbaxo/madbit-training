@@ -7,24 +7,25 @@
  */
 
 import React from 'react';
-import {StatusBar, StyleSheet, View} from 'react-native';
+import { StatusBar, StyleSheet, View } from 'react-native';
 
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 
-import {Provider, useSelector} from 'react-redux';
+import { Provider } from 'react-redux';
+import { Colors } from './src/constants';
+import { useAppSelector } from './src/hooks/useAppSelector';
 import store from './src/redux/store';
-import LoginScreen from './src/views/LoginScreen';
-import {Colors} from './src/constants';
 import HomeScreen from './src/views/HomeScreen';
+import LoginScreen from './src/views/LoginScreen';
 
 // NOTA: HO USATO UNA VERSIONE DI REACT NATIVE SVG PRECEDENTE PERCHÈ MI DAVA ERRORE L'ULTIMA
 // NOTA: HO USATO REACT-NATIVE-SCREENS alla versione 3.24.0 per problemi di incompatibilità
 
 const AppContent = () => {
-  const accessToken = useSelector(state => state.auth.accessToken);
+  const accessToken = useAppSelector(state => state.auth.accessToken);
   const insets = useSafeAreaInsets();
 
   const backgroundStyle = {
