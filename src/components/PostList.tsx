@@ -1,25 +1,29 @@
 // src/components/PostList.tsx
 import React, {useEffect} from 'react';
-import {StyleSheet, FlatList, Alert, View} from 'react-native';
-import useFetch from '../hooks/useFetch';
-import {PostType} from '../types';
+import {Alert, FlatList, StyleSheet, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {ENDPOINT_POST} from '../constants';
-import {AppDispatch, RootState} from '../redux/store';
-import {useDispatch, useSelector} from 'react-redux';
+import {useAppSelector} from '../hooks/useAppSelector';
+import useFetch from '../hooks/useFetch';
 import {setPosts} from '../redux/postSlice';
+import {AppDispatch} from '../redux/store';
+import {PostType} from '../types';
 import Post from './Post';
 
 const PostList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const {posts} = useSelector((state: RootState) => state.posts);
+  const {posts} = useAppSelector(state => state.posts);
   //const userId = useSelector((state: RootState) => state.auth.id);
 
   const {error, data, fetchData} = useFetch<PostType[]>(ENDPOINT_POST, 'GET');
 
+  // Il fetch avviene solo se i post non sono stati precedentemente caricati
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (!posts.length) {
+      fetchData();
+    }
+  }, [fetchData, posts]);
 
   useEffect(() => {
     if (data) {
