@@ -2073,6 +2073,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-community/blur@npm:^4.4.1":
+  version: 4.4.1
+  resolution: "@react-native-community/blur@npm:4.4.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 1e47144b0c00dce562e72ea9f6c3e93d3bb392ec0ea001ce37ff801d9a496c9801927033ee4800bf92ea2ece9de0abe596715add3b7afe3c5d1533e260f5e09e
+  languageName: node
+  linkType: hard
+
 "@react-native-community/cli-clean@npm:14.0.0":
   version: 14.0.0
   resolution: "@react-native-community/cli-clean@npm:14.0.0"
@@ -5663,6 +5673,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-blur@npm:^13.0.2":
+  version: 13.0.2
+  resolution: "expo-blur@npm:13.0.2"
+  peerDependencies:
+    expo: "*"
+  checksum: 66badeee2002a6aed63b7e122bcd9efa514bf954a28844649a1312d3dca2c37f96cf075938850be7e56904c884c5165ae9606d553458cf8a6a9cf26f148be2b4
+  languageName: node
+  linkType: hard
+
+"expo-modules-core@npm:^1.12.24":
+  version: 1.12.24
+  resolution: "expo-modules-core@npm:1.12.24"
+  dependencies:
+    invariant: ^2.2.4
+  checksum: 0bd35e9967b5aebb7ccdbd95d3a806fe009af4ec22f53d6856c121ff0390545b1bc15f65a943fc4707bd300c29f0eb7d66d0ddc2ecc177f22d3dbe8ae305d207
+  languageName: node
+  linkType: hard
+
 "exponential-backoff@npm:^3.1.1":
   version: 3.1.1
   resolution: "exponential-backoff@npm:3.1.1"
@@ -9151,6 +9179,7 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": ^6.6.0
     "@fortawesome/react-native-fontawesome": ^0.3.2
     "@mui/material": ^6.0.2
+    "@react-native-community/blur": ^4.4.1
     "@react-native-community/eslint-config": ^2.0.0
     "@react-native-masked-view/masked-view": ^0.3.1
     "@react-navigation/bottom-tabs": ^6.6.1
@@ -9164,6 +9193,8 @@ __metadata:
     "@types/react-native-vector-icons": ^6.4.18
     babel-jest: ^26.6.3
     eslint: ^7.32.0
+    expo-blur: ^13.0.2
+    expo-modules-core: ^1.12.24
     jest: ^26.6.3
     metro-react-native-babel-preset: 0.72.4
     react: 18.1.0
