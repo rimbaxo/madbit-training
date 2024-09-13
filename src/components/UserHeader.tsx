@@ -1,15 +1,16 @@
-import {faArrowRightFromBracket} from '@fortawesome/free-solid-svg-icons'; // Importa l'icona specifica
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import React, {useEffect} from 'react';
-import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
+import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'; // Importa l'icona specifica
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import React, { useEffect } from 'react';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {useDispatch} from 'react-redux';
-import {Colors, ENDPOINT_GETME} from '../constants';
-import {useAppSelector} from '../hooks/useAppSelector';
+import { useDispatch } from 'react-redux';
+import Reactotron from 'reactotron-react-native';
+import { Colors, ENDPOINT_GETME } from '../constants';
+import { useAppSelector } from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
-import {logout, setUserInfo} from '../redux/authSlice';
-import {AppDispatch} from '../redux/store';
-import {FetchParams, GetMeType} from '../types';
+import { logout, setUserInfo } from '../redux/authSlice';
+import { AppDispatch } from '../redux/store';
+import { FetchParams, GetMeType } from '../types';
 
 const UserHeader: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -21,10 +22,10 @@ const UserHeader: React.FC = () => {
 
   const fetchObj: FetchParams = {
     endpoint: ENDPOINT_GETME,
-    method: 'GET',
+    method: 'GET'
   };
 
-  const {loading, error, data, fetchData} = useFetch<GetMeType>(fetchObj);
+  const { loading, error, data, fetchData } = useFetch<GetMeType>(fetchObj);
 
   // Il fetch avviene solo se manca uno dei dati sottostanti
   useEffect(() => {
@@ -33,11 +34,18 @@ const UserHeader: React.FC = () => {
     }
   }, [fetchData, id, email, fullName, token]);
 
+  Reactotron.onCustomCommand({
+    title: 'Reset Navigation State',
+    description: 'Resets the navigation state',
+    command: 'resetNavigation',
+    handler: () => {
+      dispatch(logout());
+    }
+  });
+
   useEffect(() => {
     if (data?.full_name && data?.email && data?.id) {
-      dispatch(
-        setUserInfo({fullName: data.full_name, email: data.email, id: data.id}),
-      );
+      dispatch(setUserInfo({ fullName: data.full_name, email: data.email, id: data.id }));
     } else if (error) {
       Alert.alert('Errore di retrieve dati', error);
     }
@@ -53,17 +61,8 @@ const UserHeader: React.FC = () => {
         {loading ? (
           <SkeletonPlaceholder>
             <>
-              <SkeletonPlaceholder.Item
-                width={180}
-                height={20}
-                borderRadius={4}
-              />
-              <SkeletonPlaceholder.Item
-                marginTop={6}
-                width={220}
-                height={20}
-                borderRadius={4}
-              />
+              <SkeletonPlaceholder.Item width={180} height={20} borderRadius={4} />
+              <SkeletonPlaceholder.Item marginTop={6} width={220} height={20} borderRadius={4} />
             </>
           </SkeletonPlaceholder>
         ) : (
@@ -74,10 +73,7 @@ const UserHeader: React.FC = () => {
         )}
       </View>
       <Pressable style={styles.iconContainer} onPress={handleLogout}>
-        <FontAwesomeIcon
-          icon={faArrowRightFromBracket}
-          color={Colors.backgroundSurfaces}
-        />
+        <FontAwesomeIcon icon={faArrowRightFromBracket} color={Colors.backgroundSurfaces} />
       </Pressable>
     </View>
   );
@@ -94,29 +90,29 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.darkRose,
     borderLeftColor: Colors.darkRose,
     borderRightColor: Colors.darkRose,
-    borderTopColor: Colors.darkRose,
+    borderTopColor: Colors.darkRose
   },
   infoContainer: {
-    flex: 1,
+    flex: 1
   },
   iconContainer: {
     backgroundColor: Colors.azure,
     padding: 10,
     borderRadius: 20,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   userName: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: Colors.lightRose,
+    color: Colors.lightRose
   },
   userEmail: {
     fontSize: 16,
     color: Colors.light,
     marginBottom: 8,
-    opacity: 0.7,
-  },
+    opacity: 0.7
+  }
 });
 
 export default UserHeader;
