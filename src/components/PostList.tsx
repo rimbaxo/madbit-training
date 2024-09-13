@@ -1,7 +1,6 @@
 // src/components/PostList.tsx
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, Animated, NativeScrollEvent, NativeSyntheticEvent, Platform, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, Animated, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { ENDPOINT_POST } from '../constants';
 import { useAppSelector } from '../hooks/useAppSelector';
@@ -28,8 +27,8 @@ const PostList: React.FC = () => {
   };
 
   // Altezza approssimativa della tab bar
-  const insets = useSafeAreaInsets();
-  const tabBarHeight = Platform.select({ ios: 50, android: 94 }) + insets.bottom;
+  //TODO: su android aggiungere dinamicamente il cambio colore bordo o altro comportamento quando raggiungi la fine
+  const tabBarHeight = 80; //Platform.select({ ios: 80, android: 80 }) ?? 75 + insets.bottom;
 
   const { error, data, fetchData } = useFetch<PostType[]>(fetchObj);
 
@@ -48,8 +47,6 @@ const PostList: React.FC = () => {
     }
   }, [data, error, dispatch]);
 
-  // credevo avesse senso invece filtra solo per i "propri" post. Sarebbe da filtrare per i post della gente che segui. Ma vabbè
-  //const filteredPosts = posts.filter(post => post.user.id === userId);
   // TODO: capire che su alcuni post, quelli creati da te, sarà possibile creare alcune operazioni CRUD
 
   const renderPost = ({ item }: { item: PostType }) => <Post {...item} />;
@@ -59,7 +56,7 @@ const PostList: React.FC = () => {
   useEffect(() => {
     Animated.timing(animatedValue, {
       toValue: isEndReached ? 1 : 0,
-      duration: 250,
+      duration: 200,
       useNativeDriver: true
     }).start();
   }, [isEndReached, animatedValue]);
@@ -72,14 +69,12 @@ const PostList: React.FC = () => {
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
 
-    // Verifica se siamo vicini alla fine della lista
+    // La sottrazione di 50 è un margine che definisce "vicino alla fine", ossia quando mancano meno di 50 pixel alla fine della lista.
     const isCloseToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 50;
 
     if (isCloseToBottom && !isEndReached) {
-      // Se siamo alla fine della lista e non abbiamo già attivato `isEndReached`
       setIsEndReached(true);
     } else if (!isCloseToBottom && isEndReached) {
-      // Se abbiamo superato la fine della lista e stiamo scorrendo verso l'alto
       setIsEndReached(false);
     }
   };

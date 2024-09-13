@@ -1,15 +1,17 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {Colors, formatReadableDate} from '../constants';
-import {PostType} from '../types';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Colors, formatReadableDate } from '../constants';
+import { HomeNavigationProp, PostType } from '../types';
 
 // Sarebbe bello implementare una funzione che fa allargare il post se si vuole vedere di più, mi serve tempo però non riesco immedita. Pensavo di si
 
 const Post: React.FC<PostType> = (item: PostType) => {
-  const {user, created_at, title, text, comments_count} = item;
+  const { id, user, created_at, title, text, comments_count } = item;
+  const navigation = useNavigation<HomeNavigationProp>();
 
   return (
-    <View style={styles.post}>
+    <Pressable style={styles.post} onPress={() => navigation.navigate('PostDetails', { postId: id })}>
       <View style={styles.userPostTopInfo}>
         <Text style={styles.userName}>{user.full_name}</Text>
         <Text style={styles.info}>{formatReadableDate(created_at)}</Text>
@@ -18,7 +20,7 @@ const Post: React.FC<PostType> = (item: PostType) => {
       <Text style={styles.postTitle}>{title}</Text>
       <Text style={styles.postContent}>{text}</Text>
       <Text style={styles.info}>Comments: {comments_count}</Text>
-    </View>
+    </Pressable>
   );
 };
 
@@ -28,28 +30,28 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundSurfaces,
     marginBottom: 16,
     borderRadius: 16,
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
   postTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: Colors.lilla,
+    color: Colors.lilla
   },
   postContent: {
     fontSize: 16,
-    color: Colors.light,
+    color: Colors.light
   },
   userName: {
     fontSize: 14,
     color: Colors.lightRose,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   info: {
     fontSize: 12,
     color: Colors.lightRose,
     marginTop: 4,
-    opacity: 0.7,
+    opacity: 0.7
   },
   postSeparatorLine: {
     marginTop: 5,
@@ -57,13 +59,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 1,
     backgroundColor: Colors.lightRose,
-    opacity: 0.3,
+    opacity: 0.3
   },
   userPostTopInfo: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+    justifyContent: 'space-between'
+  }
 });
 
 export default Post;

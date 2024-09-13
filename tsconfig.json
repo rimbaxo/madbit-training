@@ -10,8 +10,7 @@
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,
       "noImplicitAny": false,
-      "allowJs":true, 
-      "types": ["node", "react-native"]
+      "allowJs":true
     },
     "exclude": [
       "node_modules",

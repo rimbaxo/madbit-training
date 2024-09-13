@@ -55,6 +55,11 @@ export type PostType = {
   };
 };
 
+export type CommentType = {
+  id: number;
+  text: string;
+};
+
 export type PostProps = {
   title: string;
   text: string;
@@ -77,3 +82,21 @@ export type FetchParams<R = undefined> = {
   method: FetchMethod;
   body?: R;
 };
+
+//TYPES PER LA NAVIGATION
+// src/types/navigation.ts
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+export type HomeStackParamList = {
+  Home: undefined;
+  PostDetails: { postId: number };
+};
+
+export type BottomTabParamList = {
+  HomeNavigation: undefined;
+  UserInfo: undefined;
+};
+
+export type TabNavigationProp = BottomTabNavigationProp<BottomTabParamList>;
+export type HomeNavigationProp = StackNavigationProp<HomeStackParamList>;

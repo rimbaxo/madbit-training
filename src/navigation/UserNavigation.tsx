@@ -3,16 +3,17 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors } from '../constants';
-import HomeScreen from '../views/HomeScreen';
+import { BottomTabParamList } from '../types';
 import UserInfoScreen from '../views/UserInfoScreen';
+import HomeNavigator from './HomeNavigation';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 const BlurBackground = ({ screenName }) => {
-  const sstyle = StyleSheet.create({ borderColor: Colors.darkRose, borderWidth: 2 });
+  const sstyle = StyleSheet.create({ blurStyle: { borderColor: Colors.darkRose, borderWidth: 2 } });
 
   return (
-    <View style={[styles.blurContainer, screenName === 'UserInfo' ? sstyle : {}]}>
+    <View style={[styles.blurContainer, screenName === 'UserInfo' ? sstyle.blurStyle : {}]}>
       <BlurView
         style={[StyleSheet.absoluteFill]}
         blurType="dark"
@@ -37,10 +38,11 @@ const UserNavigation = () => {
       })}
     >
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="HomeNavigation"
+        component={HomeNavigator}
         options={{
-          headerShown: false
+          headerShown: false,
+          tabBarLabel: 'Home'
         }}
       />
       <Tab.Screen
