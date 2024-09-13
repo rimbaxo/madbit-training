@@ -1,6 +1,7 @@
 // src/components/PostList.tsx
-import React, { useEffect } from 'react';
-import { Alert, FlatList, StyleSheet, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Alert, Animated, NativeScrollEvent, NativeSyntheticEvent, Platform, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 import { ENDPOINT_POST } from '../constants';
 import { useAppSelector } from '../hooks/useAppSelector';
@@ -12,6 +13,7 @@ import Post from './Post';
 
 const PostList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const [isEndReached, setIsEndReached] = useState(false); // Stato per tracciare se siamo alla fine della lista
 
   const { posts } = useAppSelector(state => state.posts);
   //const userId = useSelector((state: RootState) => state.auth.id);
@@ -20,6 +22,14 @@ const PostList: React.FC = () => {
     endpoint: ENDPOINT_POST,
     method: 'GET'
   };
+
+  const handleEndReached = () => {
+    setIsEndReached(true);
+  };
+
+  // Altezza approssimativa della tab bar
+  const insets = useSafeAreaInsets();
+  const tabBarHeight = Platform.select({ ios: 50, android: 94 }) + insets.bottom;
 
   const { error, data, fetchData } = useFetch<PostType[]>(fetchObj);
 
@@ -44,14 +54,48 @@ const PostList: React.FC = () => {
 
   const renderPost = ({ item }: { item: PostType }) => <Post {...item} />;
 
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(animatedValue, {
+      toValue: isEndReached ? 1 : 0,
+      duration: 250,
+      useNativeDriver: true
+    }).start();
+  }, [isEndReached, animatedValue]);
+
+  const translateY = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -tabBarHeight]
+  });
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+
+    // Verifica se siamo vicini alla fine della lista
+    const isCloseToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 50;
+
+    if (isCloseToBottom && !isEndReached) {
+      // Se siamo alla fine della lista e non abbiamo già attivato `isEndReached`
+      setIsEndReached(true);
+    } else if (!isCloseToBottom && isEndReached) {
+      // Se abbiamo superato la fine della lista e stiamo scorrendo verso l'alto
+      setIsEndReached(false);
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <FlatList
+    <View style={[styles.container]}>
+      <Animated.FlatList
         data={posts}
         renderItem={renderPost}
         keyExtractor={item => item.id.toString()}
-        style={styles.list}
+        style={[styles.list, , { transform: [{ translateY }] }]}
         showsVerticalScrollIndicator={false}
+        onEndReached={handleEndReached}
+        onEndReachedThreshold={0.5}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
       />
     </View>
   );
@@ -61,10 +105,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    overflow: 'hidden'
   },
   list: {
-    flex: 1
+    flex: 1,
+    overflow: 'hidden'
   }
 });
 

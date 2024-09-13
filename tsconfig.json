@@ -9,7 +9,9 @@
       "esModuleInterop": true,
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,
-      "noImplicitAny": false, 
+      "noImplicitAny": false,
+      "allowJs":true, 
+      "types": ["node", "react-native"]
     },
     "exclude": [
       "node_modules",

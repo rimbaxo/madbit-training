@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import PostList from '../components/PostList';
-import UserHeader from '../components/UserHeader';
 import { Colors } from '../constants';
 
 const HomeScreen: React.FC = () => {
@@ -18,8 +17,8 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={backgroundStyle}>
-      <UserHeader />
       <View style={styles.postsContainer}>
+        {/* Passiamo handleEndReached a PostList per sapere quando siamo alla fine */}
         <PostList />
       </View>
     </View>
