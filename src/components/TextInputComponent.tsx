@@ -1,16 +1,16 @@
 import React from 'react';
-import {TextInput, StyleSheet, TextInputProps} from 'react-native';
-import {Colors} from '../constants';
+import { StyleSheet, TextInput, TextInputProps } from 'react-native';
+import { Colors } from '../constants';
 
 type CustomTextInputProps = TextInputProps & {
   placeholder: string;
 };
 
-const TextInputComponent: React.FC<CustomTextInputProps> = ({...props}) => {
+const TextInputComponent: React.FC<CustomTextInputProps> = ({ style, ...props }) => {
   return (
     <TextInput
       {...props}
-      style={styles.input}
+      style={[styles.input, style]}
       //value={value}
       //placeholder={placeholder}
       placeholderTextColor={Colors.lilla}
@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     paddingHorizontal: 8,
     borderRadius: 10,
-    color: Colors.light,
-  },
+    color: Colors.light
+  }
 });
 
 export default TextInputComponent;

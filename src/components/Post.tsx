@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Colors, formatReadableDate } from '../constants';
 import { HomeNavigationProp, PostType } from '../types';
 
@@ -13,7 +13,10 @@ const Post: React.FC<PostType> = (item: PostType) => {
   return (
     <Pressable style={styles.post} onPress={() => navigation.navigate('PostDetails', { postId: id })}>
       <View style={styles.userPostTopInfo}>
-        <Text style={styles.userName}>{user.full_name}</Text>
+        <View style={styles.postHeader}>
+          <Image source={{ uri: user.picture }} style={styles.profilePicture} />
+          <Text style={styles.userName}>{user.full_name}</Text>
+        </View>
         <Text style={styles.info}>{formatReadableDate(created_at)}</Text>
       </View>
       <View style={styles.postSeparatorLine} />
@@ -40,7 +43,8 @@ const styles = StyleSheet.create({
   },
   postContent: {
     fontSize: 16,
-    color: Colors.light
+    color: Colors.light,
+    marginBottom: 4
   },
   userName: {
     fontSize: 14,
@@ -50,7 +54,6 @@ const styles = StyleSheet.create({
   info: {
     fontSize: 12,
     color: Colors.lightRose,
-    marginTop: 4,
     opacity: 0.7
   },
   postSeparatorLine: {
@@ -64,7 +67,22 @@ const styles = StyleSheet.create({
   userPostTopInfo: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  profilePicture: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: Colors.darkRose
+  },
+  postHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5
   }
 });
 

@@ -55,7 +55,6 @@ const LoginScreen: React.FC = () => {
       <View style={styles.containerLoginData}>
         <Text style={styles.label}>Username</Text>
         <TextInputComponent
-          style={{ height: 100 }}
           placeholder="Username o email"
           value={username}
           onChangeText={val => {

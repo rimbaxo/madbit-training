@@ -1,22 +1,23 @@
 import React from 'react';
-import {Pressable, Text, StyleSheet, PressableProps} from 'react-native';
-import {Colors} from '../constants';
+import { Pressable, PressableProps, StyleSheet, Text } from 'react-native';
+import { Colors } from '../constants';
 
 type CustomButtonProps = PressableProps & {
   title: string;
   onPress: () => void;
 };
 
-const Button: React.FC<CustomButtonProps> = ({title, onPress}) => {
+const Button: React.FC<CustomButtonProps> = ({ title, onPress }) => {
   return (
     <Pressable
       onPress={onPress}
-      style={({pressed}) => [
+      style={({ pressed }) => [
         styles.button,
         {
-          backgroundColor: pressed ? Colors.blue : Colors.azure,
-        }, // Cambia colore quando premuto
-      ]}>
+          backgroundColor: pressed ? Colors.blue : Colors.azure
+        }
+      ]}
+    >
       <Text style={styles.buttonText}>{title}</Text>
     </Pressable>
   );
@@ -31,13 +32,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.azure,
+    backgroundColor: Colors.azure
   },
   buttonText: {
     color: Colors.backgroundSurfaces,
     fontSize: 16,
-    fontWeight: 'bold',
-  },
+    fontWeight: 'bold'
+  }
 });
 
 export default Button;

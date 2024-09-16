@@ -1,37 +1,60 @@
+import { faArrowLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, ENDPOINT_POST } from '../constants';
+import TextInputComponent from '../components/TextInputComponent';
+import { Colors, ENDPOINT_POST, formatReadableDate } from '../constants';
+import { useAppSelector } from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
-import { CommentType, FetchParams, PostType } from '../types'; // Update with actual types
+import { CommentType, FetchParams, PostType } from '../types';
 
 export type PostDetailsScreenProps = {
   postId: number;
 };
 
-// TODO: parametrizzare questa cosa meglio
 const PostDetailsScreen: React.FC = () => {
   const route = useRoute();
   const { postId } = route.params as PostDetailsScreenProps;
-  const fetchObj: FetchParams = {
+
+  const userId = useAppSelector(state => state.auth.id);
+  const userFullName = useAppSelector(state => state.auth.fullName);
+  const userEmail = useAppSelector(state => state.auth.email);
+
+  const [newComment, setNewComment] = useState('');
+  const [comments, setComments] = useState<CommentType[]>([]);
+
+  const fetchPost: FetchParams = {
     endpoint: ENDPOINT_POST + '/' + postId.toString(),
     method: 'GET'
   };
+  const fetchPostComments: FetchParams = {
+    endpoint: ENDPOINT_POST + '/' + postId.toString() + '/comments',
+    method: 'GET'
+  };
 
-  console.log('[], PostId', postId);
-
-  const { loading, error, data, fetchData } = useFetch<PostType>(fetchObj);
+  const { loading, error, data, fetchData } = useFetch<PostType>(fetchPost);
+  const {
+    loading: commentLoading,
+    error: commentError,
+    data: commentData,
+    fetchData: fetchCommentData
+  } = useFetch<CommentType[]>(fetchPostComments);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchCommentData();
+  }, [fetchData, fetchCommentData]);
+
+  useEffect(() => {
+    if (commentData) setComments(commentData);
+  }, [commentData]);
 
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
-  const [newComment, setNewComment] = useState('');
-  const [comments, setComments] = useState<CommentType[]>([]);
+  console.log('[], commentData', commentData);
 
   const backgroundStyle = {
     flex: 1,
@@ -41,143 +64,186 @@ const PostDetailsScreen: React.FC = () => {
     paddingRight: insets.right
   };
 
+  /*
   const handleAddComment = () => {
     if (newComment.trim()) {
       const newCommentObj: CommentType = {
         id: Number(Date.now().toString()),
-        text: newComment
+        text: newComment,
+        created_at: Date.now().toString(),
+        updated_at: Date.now().toString(),
+        user: {
+            id: userId ? userId : 999,
+            email: userEmail ? userEmail : '',
+
+
+
+        }
       };
       setComments([...comments, newCommentObj]);
       setNewComment('');
     } else {
       Alert.alert('Comment cannot be empty');
     }
-  };
-
-  const handleDeletePost = () => {
-    Alert.alert('Post deleted');
-  };
-
-  const handleEditPost = () => {
-    Alert.alert('Edit post');
-  };
-
-  const renderComment = ({ item }: { item: CommentType }) => (
-    <View style={styles.commentContainer}>
-      <Text>{item.text}</Text>
-    </View>
-  );
+  };*/
 
   return (
     <View style={backgroundStyle}>
-      <Pressable style={styles.goBackButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.goBackText}>Back</Text>
-      </Pressable>
+      <ScrollView>
+        <View style={styles.postHeader}>
+          <Pressable style={styles.goBackButton} onPress={() => navigation.goBack()}>
+            <FontAwesomeIcon icon={faArrowLeft} color={Colors.backgroundSurfaces} />
+          </Pressable>
+          <Text style={styles.h2Text}>Posts</Text>
+        </View>
 
-      <View style={styles.postInfoContainer}>
-        <Text style={styles.postTitle}>{data?.title}</Text>
-        <Text style={styles.postContent}>{data?.text}</Text>
-        <Text style={styles.postDate}>{data?.created_at}</Text>
-      </View>
+        {data ? (
+          <View style={styles.postInfoContainer}>
+            <View style={styles.userPostTopInfo}>
+              <Text style={styles.userName}>{data.user.full_name}</Text>
+              <Text style={styles.postDate}>{formatReadableDate(data.created_at)}</Text>
+            </View>
+            <View style={styles.separator} />
+            <Text style={styles.postTitle}>{data.title}</Text>
+            <Text style={styles.postContent}>{data.text}</Text>
+          </View>
+        ) : null}
 
-      <View style={styles.buttonsContainer}>
-        <Pressable style={styles.button} onPress={handleEditPost}>
-          <Text style={styles.buttonText}>Edit Post</Text>
-        </Pressable>
-        <Pressable style={styles.button} onPress={handleDeletePost}>
-          <Text style={styles.buttonText}>Delete Post</Text>
-        </Pressable>
-      </View>
-
-      <FlatList
-        data={comments}
-        renderItem={renderComment}
-        keyExtractor={item => item.id.toString()}
-        style={styles.commentsList}
-      />
-
+        <Text style={styles.h1Text}>Comments</Text>
+        <View style={styles.commentsContainer}>
+          <View style={styles.commentsContainer}>
+            {comments?.reverse().map(comment => (
+              <View key={comment.id} style={styles.commentContainer}>
+                <View style={styles.commentHeader}>
+                  <Image source={{ uri: comment.user.picture }} style={styles.profilePicture} />
+                  <Text style={{ color: Colors.lightRose, fontWeight: 'bold' }}>{comment.user.full_name}</Text>
+                </View>
+                <Text style={styles.commentText}>{comment.text}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
       <View style={styles.commentInputContainer}>
-        <TextInput
-          value={newComment}
-          onChangeText={setNewComment}
-          placeholder="Add a comment..."
-          style={styles.commentInput}
-        />
-        <Button title="Add Comment" onPress={handleAddComment} />
+        <View style={styles.addCommentComponent}>
+          <TextInputComponent
+            style={{ flex: 1 }}
+            value={newComment}
+            placeholder="Add a comment..."
+            onChangeText={setNewComment}
+          />
+
+          <Pressable style={styles.goBackButton}>
+            <FontAwesomeIcon icon={faPaperPlane} color={Colors.backgroundSurfaces} />
+          </Pressable>
+        </View>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  goBackButton: {
-    padding: 10,
-    backgroundColor: Colors.azure,
-    borderRadius: 5,
-    margin: 10
+  postHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 16,
+    paddingBottom: 10
   },
-  goBackText: {
+  goBackButton: {
+    backgroundColor: Colors.azure,
+    padding: 10,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  h2Text: {
     color: Colors.light,
-    fontSize: 16,
-    textAlign: 'center'
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingLeft: 12
+  },
+  h1Text: {
+    color: Colors.light,
+    fontSize: 24,
+    fontWeight: 'bold',
+    paddingLeft: 12,
+    marginBottom: 5
   },
   postInfoContainer: {
     padding: 20,
     backgroundColor: Colors.backgroundSurfaces,
-    marginBottom: 10,
-    borderRadius: 5
+    marginTop: 0,
+    marginBottom: 20
   },
   postTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10
+    marginBottom: 10,
+    color: Colors.lilla
   },
   postContent: {
     fontSize: 16,
-    marginBottom: 10
+    color: Colors.light
+  },
+  separator: {
+    height: 1,
+    marginTop: 5,
+    marginBottom: 5,
+    opacity: 0.5,
+    backgroundColor: Colors.darkRose
   },
   postDate: {
-    fontSize: 14,
-    color: Colors.backgroundSurfaces
+    fontSize: 12,
+    color: Colors.lightRose
   },
-  buttonsContainer: {
+  addCommentComponent: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginVertical: 10
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
-  button: {
-    padding: 10,
-    backgroundColor: Colors.light,
-    borderRadius: 5,
-    flex: 1,
-    marginHorizontal: 5
-  },
-  buttonText: {
-    color: Colors.light,
-    textAlign: 'center'
-  },
-  commentsList: {
-    flex: 1,
-    marginVertical: 10
+  commentsContainer: {
+    backgroundColor: Colors.backgroundSurfaces
   },
   commentInputContainer: {
     padding: 10,
     backgroundColor: Colors.backgroundSurfaces,
     borderTopWidth: 1,
-    borderColor: Colors.backgroundSurfaces
-  },
-  commentInput: {
-    height: 40,
-    borderColor: Colors.backgroundSurfaces,
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10
+    borderRadius: 5
   },
   commentContainer: {
     padding: 10,
     borderBottomWidth: 1,
-    borderColor: Colors.backgroundSurfaces
+    borderBottomColor: Colors.dark,
+    borderRadius: 15
+  },
+  commentText: {
+    color: Colors.light,
+    opacity: 0.75,
+    fontSize: 14
+  },
+  profilePicture: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: Colors.darkRose
+  },
+  commentHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8
+  },
+  userName: {
+    fontSize: 14,
+    color: Colors.lightRose,
+    fontWeight: 'bold'
+  },
+  userPostTopInfo: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   }
 });
 
