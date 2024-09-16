@@ -1,21 +1,25 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, ENDPOINT_POST } from '../constants';
 import useFetch from '../hooks/useFetch';
-import { CommentType, FetchParams, HomeStackParamList, PostType } from '../types'; // Update with actual types
+import { CommentType, FetchParams, PostType } from '../types'; // Update with actual types
 
-type PostDetailsScreenProps = {
+export type PostDetailsScreenProps = {
   postId: number;
 };
 
-const PostDetailsScreen: React.FC<HomeStackParamList> = postId => {
-  //const { post } = id;
+// TODO: parametrizzare questa cosa meglio
+const PostDetailsScreen: React.FC = () => {
+  const route = useRoute();
+  const { postId } = route.params as PostDetailsScreenProps;
   const fetchObj: FetchParams = {
     endpoint: ENDPOINT_POST + '/' + postId.toString(),
     method: 'GET'
   };
+
+  console.log('[], PostId', postId);
 
   const { loading, error, data, fetchData } = useFetch<PostType>(fetchObj);
 

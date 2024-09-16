@@ -7,7 +7,7 @@ import { useAppSelector } from '../hooks/useAppSelector';
 import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LoginScreen from '../views/LoginScreen';
-import UserNavigation from './UserNavigation';
+import UserNavigator from './UserNavigator';
 
 const RootNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -30,7 +30,7 @@ const RootNavigator = () => {
       <NavigationContainer>
         <Stack.Navigator>
           {accessToken ? (
-            <Stack.Screen name="User" component={UserNavigation} options={{ headerShown: false }} />
+            <Stack.Screen name="User" component={UserNavigator} options={{ headerShown: false }} />
           ) : (
             <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           )}

@@ -1,11 +1,12 @@
 import { BlurView } from '@react-native-community/blur';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Colors } from '../constants';
 import { BottomTabParamList } from '../types';
 import UserInfoScreen from '../views/UserInfoScreen';
-import HomeNavigator from './HomeNavigation';
+import HomeNavigator from './HomeNavigator';
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -24,7 +25,7 @@ const BlurBackground = ({ screenName }) => {
   );
 };
 
-const UserNavigation = () => {
+const UserNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -40,9 +41,14 @@ const UserNavigation = () => {
       <Tab.Screen
         name="HomeNavigation"
         component={HomeNavigator}
-        options={{
-          headerShown: false,
-          tabBarLabel: 'Home'
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route);
+          const isTabBarVisible = routeName !== 'PostDetails';
+          return {
+            tabBarStyle: [{ display: isTabBarVisible ? 'flex' : 'none' }, styles.tabBarStyle],
+            headerShown: false,
+            tabBarLabel: 'Home'
+          };
         }}
       />
       <Tab.Screen
@@ -107,4 +113,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default UserNavigation;
+export default UserNavigator;

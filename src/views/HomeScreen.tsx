@@ -18,7 +18,6 @@ const HomeScreen: React.FC = () => {
   return (
     <View style={backgroundStyle}>
       <View style={styles.postsContainer}>
-        {/* Passiamo handleEndReached a PostList per sapere quando siamo alla fine */}
         <PostList />
       </View>
     </View>
