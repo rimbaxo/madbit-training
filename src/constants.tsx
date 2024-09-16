@@ -43,3 +43,5 @@ export const formatReadableDate = (isoDate: string): string => {
 
   return date.toLocaleDateString('it-IT', options);
 };
+
+export const DEFAULT_USERPIC_URI = 'https://via.placeholder.com/300x300.png/00ccaa?text=people+illum';

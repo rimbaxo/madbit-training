@@ -1,55 +1,29 @@
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'; // Importa l'icona specifica
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import React, { useEffect } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import React from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useDispatch } from 'react-redux';
-import Reactotron from 'reactotron-react-native';
-import { Colors, ENDPOINT_GETME } from '../constants';
+import { Colors } from '../constants';
 import { useAppSelector } from '../hooks/useAppSelector';
-import useFetch from '../hooks/useFetch';
-import { logout, setUserInfo } from '../redux/authSlice';
+import { logout } from '../redux/authSlice';
 import { AppDispatch } from '../redux/store';
-import { FetchParams, GetMeType } from '../types';
 
 const UserHeader: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const fullName = useAppSelector(state => state.auth.fullName);
+  const fullName = useAppSelector(state => state.auth.full_name);
   const email = useAppSelector(state => state.auth.email);
-  const token = useAppSelector(state => state.auth.accessToken);
-  const id = useAppSelector(state => state.auth.id);
 
-  const fetchObj: FetchParams = {
-    endpoint: ENDPOINT_GETME,
-    method: 'GET'
-  };
-
-  const { loading, error, data, fetchData } = useFetch<GetMeType>(fetchObj);
-
-  // Il fetch avviene solo se manca uno dei dati sottostanti
-  useEffect(() => {
-    if (!fullName || !email || !token || !id) {
-      fetchData();
-    }
-  }, [fetchData, id, email, fullName, token]);
-
-  Reactotron.onCustomCommand({
-    title: 'Reset Navigation State',
-    description: 'Resets the navigation state',
-    command: 'resetNavigation',
-    handler: () => {
-      dispatch(logout());
-    }
-  });
-
-  useEffect(() => {
-    if (data?.full_name && data?.email && data?.id) {
-      dispatch(setUserInfo({ fullName: data.full_name, email: data.email, id: data.id }));
-    } else if (error) {
-      Alert.alert('Errore di retrieve dati', error);
-    }
-  }, [data, error, fullName, email, id, loading, dispatch]);
+  // TEST REACTOTRON
+  //-----------------------------------------------
+  // Reactotron.onCustomCommand({
+  //   title: 'Reset Navigation State',
+  //   description: 'Resets the navigation state',
+  //   command: 'resetNavigation',
+  //   handler: () => {
+  //     dispatch(logout());
+  //   }
+  // });
 
   const handleLogout = () => {
     dispatch(logout());
@@ -58,19 +32,8 @@ const UserHeader: React.FC = () => {
   return (
     <View style={styles.header}>
       <View style={styles.infoContainer}>
-        {loading ? (
-          <SkeletonPlaceholder>
-            <>
-              <SkeletonPlaceholder.Item width={180} height={20} borderRadius={4} />
-              <SkeletonPlaceholder.Item marginTop={6} width={220} height={20} borderRadius={4} />
-            </>
-          </SkeletonPlaceholder>
-        ) : (
-          <>
-            <Text style={styles.userName}>{fullName}</Text>
-            <Text style={styles.userEmail}>{email}</Text>
-          </>
-        )}
+        <Text style={styles.userName}>{fullName}</Text>
+        <Text style={styles.userEmail}>{email}</Text>
       </View>
       <Pressable style={styles.iconContainer} onPress={handleLogout}>
         <FontAwesomeIcon icon={faArrowRightFromBracket} color={Colors.backgroundSurfaces} />

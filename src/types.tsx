@@ -1,9 +1,6 @@
 // TYPES PER REDUX
-export type AuthState = {
+export type AuthState = GetMeType & {
   accessToken: string | undefined;
-  fullName: string | undefined;
-  email: string | undefined;
-  id: number | undefined;
 };
 
 export type PostsState = {
@@ -32,9 +29,13 @@ export type LoginBody = {
 
 //TYPES PER IL GETME
 export type GetMeType = {
-  email: string;
-  full_name: string;
-  id: number;
+  email: string | undefined;
+  full_name: string | undefined;
+  id: number | undefined;
+  created_at: string | undefined;
+  first_name: string | undefined;
+  last_name: string | undefined;
+  picture: string | undefined;
 };
 
 //TYPES PER I POSTS
@@ -56,9 +57,10 @@ export type PostType = {
   };
 };
 
-export type CommentType = {
+export type CommentResponse = {
   id: number;
   text: string;
+
   created_at: string;
   updated_at: string;
   user: {

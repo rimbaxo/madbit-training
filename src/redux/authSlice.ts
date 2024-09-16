@@ -1,12 +1,15 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {AuthState} from '../types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AuthState } from '../types';
 
 const initialState: AuthState = {
   accessToken: undefined,
-  fullName: undefined,
+  full_name: undefined,
   email: undefined,
   id: undefined,
-};
+  created_at: undefined,
+  first_name: undefined,
+  last_name: undefined,
+  picture: undefined};
 
 const authSlice = createSlice({
   name: 'auth',
@@ -20,15 +23,19 @@ const authSlice = createSlice({
     },
     setUserInfo(
       state: AuthState,
-      action: PayloadAction<{fullName: string; email: string; id: number}>,
+      action: PayloadAction<{fullName: string; email: string; id: number, first_name: string, last_name: string, created_at: string, picture: string}>,
     ) {
-      state.fullName = action.payload.fullName;
+      state.full_name = action.payload.fullName;
       state.email = action.payload.email;
       state.id = action.payload.id;
+      state.created_at = action.payload.created_at;
+      state.first_name = action.payload.first_name;
+      state.last_name = action.payload.last_name;
+      state.picture = action.payload.picture;
     },
     logout(state: AuthState) {
       state.accessToken = undefined;
-      state.fullName = undefined;
+      state.full_name = undefined;
       state.email = undefined;
       state.id = undefined;
     },

@@ -2,13 +2,13 @@ import { faArrowLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TextInputComponent from '../components/TextInputComponent';
-import { Colors, ENDPOINT_POST, formatReadableDate } from '../constants';
+import { Colors, DEFAULT_USERPIC_URI, ENDPOINT_POST, formatReadableDate } from '../constants';
 import { useAppSelector } from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
-import { CommentType, FetchParams, PostType } from '../types';
+import { CommentResponse, FetchParams, PostType } from '../types';
 
 export type PostDetailsScreenProps = {
   postId: number;
@@ -16,36 +16,87 @@ export type PostDetailsScreenProps = {
 
 const PostDetailsScreen: React.FC = () => {
   const route = useRoute();
+
+  // TODO: passare tutte le info del post dalla navigazione senza fare la fetch per le info del post. La fetch del post però può servire in caso di update del post
   const { postId } = route.params as PostDetailsScreenProps;
 
-  const userId = useAppSelector(state => state.auth.id);
-  const userFullName = useAppSelector(state => state.auth.fullName);
-  const userEmail = useAppSelector(state => state.auth.email);
+  const authUser = useAppSelector(state => state.auth);
 
   const [newComment, setNewComment] = useState('');
-  const [comments, setComments] = useState<CommentType[]>([]);
+  const [comments, setComments] = useState<CommentResponse[]>([]);
 
-  const fetchPost: FetchParams = {
-    endpoint: ENDPOINT_POST + '/' + postId.toString(),
-    method: 'GET'
+  // TODO: ottimizza la lista creando un tipo di commento per lo stato con solo le ifno cjhe ti servono per mostrare i commenti, non tutte
+  // TODO: fare una header
+
+  // FETCH PER L'AGGIUNTA DI UN COMMENTO NUOVO
+
+  // TODO: questione ID del post (e di tutto in generale). Libreria uuidv4? però da una stringa non un number
+  const newCommentObj: CommentResponse = {
+    id: postId, //Number(formatReadableDate(Date.now.toString())),
+    text: newComment,
+    created_at: Date.now().toString(),
+    updated_at: Date.now().toString(),
+    user: {
+      id: authUser.id ?? 999,
+      email: authUser.email ?? '',
+      first_name: authUser.first_name ?? '',
+      last_name: authUser.last_name ?? '',
+      created_at: authUser.created_at ?? '',
+      full_name: authUser.full_name ?? '',
+      picture: authUser.picture ?? DEFAULT_USERPIC_URI
+    }
   };
+
+  type CommentBodyType = {
+    text: string;
+  };
+
+  const body: CommentBodyType = {
+    text: newComment
+  };
+
+  const fetchPostNewComment: FetchParams<CommentBodyType> = {
+    endpoint: ENDPOINT_POST + '/' + postId.toString() + '/comments',
+    method: 'POST',
+    body
+  };
+
+  const {
+    loading: loadingComment,
+    error: errorComment,
+    data: dataComment,
+    fetchData: fetchAddNewComment
+  } = useFetch<CommentResponse, CommentBodyType>(fetchPostNewComment);
+
+  useEffect(() => {
+    if (errorComment) {
+      fetchCommentData();
+    }
+  }, [errorComment]);
+
+  // FETCH PER I COMMENTI ASSOCIATI A QUEL POST
   const fetchPostComments: FetchParams = {
     endpoint: ENDPOINT_POST + '/' + postId.toString() + '/comments',
     method: 'GET'
   };
-
-  const { loading, error, data, fetchData } = useFetch<PostType>(fetchPost);
   const {
     loading: commentLoading,
     error: commentError,
     data: commentData,
     fetchData: fetchCommentData
-  } = useFetch<CommentType[]>(fetchPostComments);
+  } = useFetch<CommentResponse[]>(fetchPostComments);
+
+  // FETCH PER LE INFO DEL POST DELLA PAGINA
+  const fetchPost: FetchParams = {
+    endpoint: ENDPOINT_POST + '/' + postId.toString(),
+    method: 'GET'
+  };
+  const { loading, error, data, fetchData } = useFetch<PostType>(fetchPost);
 
   useEffect(() => {
     fetchData();
     fetchCommentData();
-  }, [fetchData, fetchCommentData]);
+  }, [fetchData, fetchCommentData, dataComment]);
 
   useEffect(() => {
     if (commentData) setComments(commentData);
@@ -53,8 +104,6 @@ const PostDetailsScreen: React.FC = () => {
 
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-
-  console.log('[], commentData', commentData);
 
   const backgroundStyle = {
     flex: 1,
@@ -64,33 +113,20 @@ const PostDetailsScreen: React.FC = () => {
     paddingRight: insets.right
   };
 
-  /*
   const handleAddComment = () => {
-    if (newComment.trim()) {
-      const newCommentObj: CommentType = {
-        id: Number(Date.now().toString()),
-        text: newComment,
-        created_at: Date.now().toString(),
-        updated_at: Date.now().toString(),
-        user: {
-            id: userId ? userId : 999,
-            email: userEmail ? userEmail : '',
-
-
-
-        }
-      };
+    if (newComment.trim() && authUser) {
+      fetchAddNewComment();
       setComments([...comments, newCommentObj]);
       setNewComment('');
     } else {
       Alert.alert('Comment cannot be empty');
     }
-  };*/
+  };
 
   return (
     <View style={backgroundStyle}>
-      <ScrollView>
-        <View style={styles.postHeader}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.postBackHeader}>
           <Pressable style={styles.goBackButton} onPress={() => navigation.goBack()}>
             <FontAwesomeIcon icon={faArrowLeft} color={Colors.backgroundSurfaces} />
           </Pressable>
@@ -100,8 +136,11 @@ const PostDetailsScreen: React.FC = () => {
         {data ? (
           <View style={styles.postInfoContainer}>
             <View style={styles.userPostTopInfo}>
-              <Text style={styles.userName}>{data.user.full_name}</Text>
-              <Text style={styles.postDate}>{formatReadableDate(data.created_at)}</Text>
+              <View style={styles.postHeader}>
+                <Image source={{ uri: data.user.picture }} style={styles.profilePicture} />
+                <Text style={styles.userName}>{data.user.full_name}</Text>
+              </View>
+              <Text style={styles.info}>{formatReadableDate(data.created_at)}</Text>
             </View>
             <View style={styles.separator} />
             <Text style={styles.postTitle}>{data.title}</Text>
@@ -112,11 +151,14 @@ const PostDetailsScreen: React.FC = () => {
         <Text style={styles.h1Text}>Comments</Text>
         <View style={styles.commentsContainer}>
           <View style={styles.commentsContainer}>
-            {comments?.reverse().map(comment => (
+            {comments?.map(comment => (
               <View key={comment.id} style={styles.commentContainer}>
                 <View style={styles.commentHeader}>
-                  <Image source={{ uri: comment.user.picture }} style={styles.profilePicture} />
-                  <Text style={{ color: Colors.lightRose, fontWeight: 'bold' }}>{comment.user.full_name}</Text>
+                  <View style={styles.postHeader}>
+                    <Image source={{ uri: comment.user.picture }} style={styles.profilePicture} />
+                    <Text style={{ color: Colors.lightRose, fontWeight: 'bold' }}>{comment.user.full_name}</Text>
+                  </View>
+                  <Text style={styles.info}>{formatReadableDate(comment.created_at)}</Text>
                 </View>
                 <Text style={styles.commentText}>{comment.text}</Text>
               </View>
@@ -133,7 +175,7 @@ const PostDetailsScreen: React.FC = () => {
             onChangeText={setNewComment}
           />
 
-          <Pressable style={styles.goBackButton}>
+          <Pressable style={styles.goBackButton} onPress={handleAddComment}>
             <FontAwesomeIcon icon={faPaperPlane} color={Colors.backgroundSurfaces} />
           </Pressable>
         </View>
@@ -143,11 +185,15 @@ const PostDetailsScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  postHeader: {
+  postBackHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 16,
-    paddingBottom: 10
+    paddingBottom: 10,
+    paddingLeft: 16
+  },
+  postHeader: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   goBackButton: {
     backgroundColor: Colors.azure,
@@ -170,7 +216,7 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   postInfoContainer: {
-    padding: 20,
+    padding: 16,
     backgroundColor: Colors.backgroundSurfaces,
     marginTop: 0,
     marginBottom: 20
@@ -207,8 +253,8 @@ const styles = StyleSheet.create({
   commentInputContainer: {
     padding: 10,
     backgroundColor: Colors.backgroundSurfaces,
-    borderTopWidth: 1,
-    borderRadius: 5
+    borderTopWidth: 3,
+    borderColor: Colors.darkRose
   },
   commentContainer: {
     padding: 10,
@@ -233,6 +279,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 8
   },
   userName: {
@@ -243,7 +290,13 @@ const styles = StyleSheet.create({
   userPostTopInfo: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  info: {
+    fontSize: 12,
+    color: Colors.lightRose,
+    opacity: 0.7
   }
 });
 

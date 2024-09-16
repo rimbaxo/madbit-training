@@ -1,7 +1,7 @@
 // src/redux/postsSlice.ts
 
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {PostsState, PostType} from '../types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PostsState, PostType } from '../types';
 
 const initialState: PostsState = {
   posts: [],
@@ -17,6 +17,9 @@ const postsSlice = createSlice({
       state.posts = action.payload;
       state.loading = false;
       state.error = null;
+    },
+    updateCommentPostNumber(state: PostsState, action: PayloadAction<number>){
+      //TODO: aggiornare manualmente il numero di commenti per il mio dato post
     },
     setLoading(state: PostsState, action: PayloadAction<boolean>) {
       state.loading = action.payload;
