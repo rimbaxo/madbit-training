@@ -1,7 +1,7 @@
 // src/components/PostList.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Animated, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from 'react-native';
-import { ENDPOINT_POST } from '../constants';
+import { ENDPOINT_POST, LIST } from '../constants';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
@@ -53,7 +53,7 @@ const PostList: React.FC = () => {
 
   // TODO: capire che su alcuni post, quelli creati da te, sarà possibile creare alcune operazioni CRUD
 
-  const renderPost = ({ item }: { item: PostType }) => <Post {...item} />;
+  const renderPost = ({ item }: { item: PostType }) => <Post {...item} variant={LIST} />;
 
   const animatedValue = useRef(new Animated.Value(0)).current;
 

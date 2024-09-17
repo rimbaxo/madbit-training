@@ -2,20 +2,12 @@ import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import {
-  Alert,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Comment from '../components/Comment';
+import Post from '../components/Post';
 import TextInputComponent from '../components/TextInputComponent';
-import { Colors, DEFAULT_USERPIC_URI, ENDPOINT_POST, formatReadableDate } from '../constants';
+import { Colors, DEFAULT_USERPIC_URI, ENDPOINT_POST } from '../constants';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
@@ -38,7 +30,7 @@ const PostDetailsScreen: React.FC = () => {
 
   // TODO: ottimizza la lista creando un tipo di commento per lo stato con solo le info che ti servono per mostrare i commenti, non tutte. FATTO
   // TODO: fare una header. FATTO
-  // TODO: sistemare tastiera iphone (KEYBOARDAVOIDINGNEW non va...)
+  // TODO: sistemare tastiera iphone. FATTO
 
   // FETCH PER L'AGGIUNTA DI UN COMMENTO NUOVO
   const fetchPostNewComment: FetchParams<CommentBody> = {
@@ -120,38 +112,12 @@ const PostDetailsScreen: React.FC = () => {
   return (
     <View style={backgroundStyle}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {user ? (
-          <View style={styles.postInfoContainer}>
-            <View style={styles.userPostTopInfo}>
-              <View style={styles.postHeader}>
-                <Image source={{ uri: user.picture }} style={styles.profilePicture} />
-                <Text style={styles.userName}>{user.full_name}</Text>
-              </View>
-              <Text style={styles.info}>{formatReadableDate(created_at)}</Text>
-            </View>
-            <View style={styles.separator} />
-            <Text style={styles.postTitle}>{title}</Text>
-            <Text style={styles.postContent}>{text}</Text>
-          </View>
-        ) : null}
-
+        {user ? <Post {...(route.params as PostType)} /> : null}
         <Text style={styles.h1Text}>Comments</Text>
         <View style={styles.commentsContainer}>
-          <View style={styles.commentsContainer}>
-            {comments?.map(comment => (
-              //CHE METTO COME ID PER OGNI VIEW RENDERIZZATA?????
-              <View style={styles.commentContainer}>
-                <View style={styles.commentHeader}>
-                  <View style={styles.postHeader}>
-                    <Image source={{ uri: comment.user_picture }} style={styles.profilePicture} />
-                    <Text style={{ color: Colors.lightRose, fontWeight: 'bold' }}>{comment.username}</Text>
-                  </View>
-                  <Text style={styles.info}>{formatReadableDate(comment.created_at)}</Text>
-                </View>
-                <Text style={styles.commentText}>{comment.text}</Text>
-              </View>
-            ))}
-          </View>
+          {comments?.map(comment => (
+            <Comment {...comment} />
+          ))}
         </View>
       </ScrollView>
       <KeyboardAvoidingView
@@ -177,10 +143,6 @@ const PostDetailsScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  postHeader: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
   sendButton: {
     width: 40,
     height: 40,
@@ -197,31 +159,9 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     marginBottom: 5
   },
-  postInfoContainer: {
-    padding: 16,
-    backgroundColor: Colors.backgroundSurfaces,
-    marginTop: 0,
-    marginBottom: 20
-  },
-  postTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: Colors.lilla
-  },
-  postContent: {
-    fontSize: 16,
-    color: Colors.light
-  },
-  separator: {
-    height: 1,
-    marginTop: 5,
-    marginBottom: 5,
-    opacity: 0.5,
-    backgroundColor: Colors.darkRose
-  },
   commentsContainer: {
     flex: 1,
+    marginBottom: 100, // MESSO TENENDO CONTO DELL'ALTEZZA DELLA TASTIERA. NON MI PIACE TANTO
     backgroundColor: Colors.backgroundSurfaces
   },
   addCommentComponent: {
@@ -235,43 +175,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  commentContainer: {
-    flex: 1,
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.dark,
-    borderRadius: 15
-  },
-  commentText: {
-    color: Colors.light,
-    opacity: 0.75,
-    fontSize: 14
-  },
-  profilePicture: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: Colors.darkRose
-  },
-  commentHeader: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 8
-  },
   userName: {
     fontSize: 14,
     color: Colors.lightRose,
     fontWeight: 'bold'
-  },
-  userPostTopInfo: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
   },
   info: {
     fontSize: 12,

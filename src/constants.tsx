@@ -45,3 +45,6 @@ export const formatReadableDate = (isoDate: string): string => {
 };
 
 export const DEFAULT_USERPIC_URI = 'https://via.placeholder.com/300x300.png/00ccaa?text=people+illum';
+
+export const LIST = 'LIST';
+export const FLAT = 'FLAT';

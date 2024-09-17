@@ -39,6 +39,9 @@ export type GetMeType = {
 };
 
 //TYPES PER I POSTS
+
+export type Variant = 'LIST' | 'FLAT';
+
 export type PostType = {
   id: number;
   title: string;
@@ -55,6 +58,7 @@ export type PostType = {
     full_name: string;
     picture: string;
   };
+  variant?: Variant;
 };
 
 export type CommentResponse = {

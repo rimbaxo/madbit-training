@@ -1,17 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { Colors, formatReadableDate } from '../constants';
+import { Colors, FLAT, formatReadableDate, LIST } from '../constants';
 import { HomeNavigationProp, PostType } from '../types';
 
 // Sarebbe bello implementare una funzione che fa allargare il post se si vuole vedere di più, mi serve tempo però non riesco immedita. Pensavo di si
 
 const Post: React.FC<PostType> = (item: PostType) => {
-  const { id, user, created_at, title, text, comments_count } = item;
+  const { id, user, created_at, title, text, comments_count, variant } = item;
   const navigation = useNavigation<HomeNavigationProp>();
 
-  return (
-    <Pressable style={styles.post} onPress={() => navigation.navigate('PostDetails', { ...item })}>
+  return variant === LIST ? (
+    <Pressable style={styles.post} onPress={() => navigation.navigate('PostDetails', { ...item, variant: FLAT })}>
       <View style={styles.userPostTopInfo}>
         <View style={styles.postHeader}>
           <Image source={{ uri: user.picture }} style={styles.profilePicture} />
@@ -24,6 +24,19 @@ const Post: React.FC<PostType> = (item: PostType) => {
       <Text style={styles.postContent}>{text}</Text>
       <Text style={styles.info}>Comments: {comments_count}</Text>
     </Pressable>
+  ) : (
+    <View style={styles.postInfoContainer}>
+      <View style={styles.userPostTopInfo}>
+        <View style={styles.postHeader}>
+          <Image source={{ uri: user.picture }} style={styles.profilePicture} />
+          <Text style={styles.userName}>{user.full_name}</Text>
+        </View>
+        <Text style={styles.info}>{formatReadableDate(created_at)}</Text>
+      </View>
+      <View style={styles.postSeparatorLine} />
+      <Text style={styles.postTitle}>{title}</Text>
+      <Text style={styles.postContent}>{text}</Text>
+    </View>
   );
 };
 
@@ -34,6 +47,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 16,
     overflow: 'hidden'
+  },
+  postInfoContainer: {
+    padding: 16,
+    backgroundColor: Colors.backgroundSurfaces,
+    marginTop: 0,
+    marginBottom: 20
   },
   postTitle: {
     fontSize: 18,
