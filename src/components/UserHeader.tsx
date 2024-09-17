@@ -2,14 +2,13 @@ import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'; // 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useDispatch } from 'react-redux';
 import { Colors } from '../constants';
+import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { logout } from '../redux/authSlice';
-import { AppDispatch } from '../redux/store';
 
 const UserHeader: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   const fullName = useAppSelector(state => state.auth.full_name);
   const email = useAppSelector(state => state.auth.email);

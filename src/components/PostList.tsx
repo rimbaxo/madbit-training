@@ -1,25 +1,23 @@
 // src/components/PostList.tsx
-import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Animated, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from 'react-native';
-import { useDispatch } from 'react-redux';
 import { ENDPOINT_POST } from '../constants';
+import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
 import { setPosts } from '../redux/postSlice';
-import { AppDispatch } from '../redux/store';
 import { FetchParams, PostType } from '../types';
 import Post from './Post';
 
 const PostList: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const [isEndReached, setIsEndReached] = useState(false); // Stato per tracciare se siamo alla fine della lista
 
   // Renderizzo nuovamente la lista di post quando ritorno in focus su di essa. Questo mi serve per aggiornare la label di "Comments" associati al post
-  const focus = useIsFocused();
-  useEffect(() => {
-    if (focus) fetchData();
-  }, [focus]);
+  // const focus = useIsFocused();
+  // useEffect(() => {
+  //   if (focus) fetchData();
+  // }, [focus]);
 
   const { posts } = useAppSelector(state => state.posts);
 

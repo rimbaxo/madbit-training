@@ -1,13 +1,15 @@
-import { faArrowLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TextInputComponent from '../components/TextInputComponent';
 import { Colors, DEFAULT_USERPIC_URI, ENDPOINT_POST, formatReadableDate } from '../constants';
+import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
+import { updateCommentPostNumber } from '../redux/postSlice';
 import { CommentBody, CommentRendered, CommentResponse, FetchParams, PostType } from '../types';
 
 const PostDetailsScreen: React.FC = () => {
@@ -17,17 +19,18 @@ const PostDetailsScreen: React.FC = () => {
   //FATTO
   const { id, user, created_at, title, text } = route.params as PostType;
 
+  const dispatch = useAppDispatch();
+
   const authUser = useAppSelector(state => state.auth);
 
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState<CommentRendered[]>([]);
 
   // TODO: ottimizza la lista creando un tipo di commento per lo stato con solo le info che ti servono per mostrare i commenti, non tutte. FATTO
-  // TODO: fare una header
+  // TODO: fare una header. FATTO
   // TODO: sistemare tastiera iphone (KEYBOARDAVOIDINGNEW non va...)
 
   // FETCH PER L'AGGIUNTA DI UN COMMENTO NUOVO
-
   const fetchPostNewComment: FetchParams<CommentBody> = {
     endpoint: ENDPOINT_POST + '/' + id.toString() + '/comments',
     method: 'POST',
@@ -77,12 +80,10 @@ const PostDetailsScreen: React.FC = () => {
   }, [commentData]);
 
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
 
   const backgroundStyle = {
     flex: 1,
     backgroundColor: Colors.backgroundColor,
-    paddingTop: insets.top,
     paddingLeft: insets.left,
     paddingRight: insets.right
   };
@@ -100,6 +101,7 @@ const PostDetailsScreen: React.FC = () => {
         }
       ]);
       setNewComment('');
+      dispatch(updateCommentPostNumber(id));
     } else {
       Alert.alert('Comment cannot be empty');
     }
@@ -108,13 +110,6 @@ const PostDetailsScreen: React.FC = () => {
   return (
     <View style={backgroundStyle}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.postBackHeader}>
-          <Pressable style={styles.goBackButton} onPress={() => navigation.goBack()}>
-            <FontAwesomeIcon icon={faArrowLeft} color={Colors.backgroundSurfaces} />
-          </Pressable>
-          <Text style={styles.h2Text}>Posts</Text>
-        </View>
-
         {user ? (
           <View style={styles.postInfoContainer}>
             <View style={styles.userPostTopInfo}>
@@ -134,6 +129,7 @@ const PostDetailsScreen: React.FC = () => {
         <View style={styles.commentsContainer}>
           <View style={styles.commentsContainer}>
             {comments?.map(comment => (
+              //CHE METTO COME ID PER OGNI VIEW RENDERIZZATA?????
               <View style={styles.commentContainer}>
                 <View style={styles.commentHeader}>
                   <View style={styles.postHeader}>
@@ -157,7 +153,7 @@ const PostDetailsScreen: React.FC = () => {
             onChangeText={setNewComment}
           />
 
-          <Pressable style={styles.goBackButton} onPress={handleAddComment}>
+          <Pressable style={styles.sendButton} onPress={handleAddComment}>
             <FontAwesomeIcon icon={faPaperPlane} color={Colors.backgroundSurfaces} />
           </Pressable>
         </View>
@@ -167,28 +163,16 @@ const PostDetailsScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  postBackHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingBottom: 10,
-    paddingLeft: 16
-  },
   postHeader: {
     flexDirection: 'row',
     alignItems: 'center'
   },
-  goBackButton: {
+  sendButton: {
     backgroundColor: Colors.azure,
     padding: 10,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  h2Text: {
-    color: Colors.light,
-    fontSize: 18,
-    fontWeight: 'bold',
-    paddingLeft: 12
   },
   h1Text: {
     color: Colors.light,
@@ -219,10 +203,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     opacity: 0.5,
     backgroundColor: Colors.darkRose
-  },
-  postDate: {
-    fontSize: 12,
-    color: Colors.lightRose
   },
   addCommentComponent: {
     flexDirection: 'row',

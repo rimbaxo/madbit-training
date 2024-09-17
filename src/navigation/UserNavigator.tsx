@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import CustomHeader from '../components/CustomHeader';
 import { Colors } from '../constants';
 import { BottomTabParamList } from '../types';
 import UserInfoScreen from '../views/UserInfoScreen';
@@ -46,8 +47,9 @@ const UserNavigator = () => {
           const isTabBarVisible = routeName !== 'PostDetails';
           return {
             tabBarStyle: [{ display: isTabBarVisible ? 'flex' : 'none' }, styles.tabBarStyle],
-            headerShown: false,
-            tabBarLabel: 'Home'
+            headerShown: !isTabBarVisible,
+            tabBarLabel: 'Home',
+            header: () => (!isTabBarVisible ? <CustomHeader /> : null)
           };
         }}
       />

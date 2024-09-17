@@ -19,7 +19,12 @@ const postsSlice = createSlice({
       state.error = null;
     },
     updateCommentPostNumber(state: PostsState, action: PayloadAction<number>){
-      //TODO: aggiornare manualmente il numero di commenti per il mio dato post
+      //TODO: aggiornare manualmente il numero di commenti per il mio dato post. FATTO
+      const postId = action.payload;
+      const post = state.posts.find((post) => post.id === postId);
+      if (post) {
+        post.comments_count += 1;
+      }
     },
     setLoading(state: PostsState, action: PayloadAction<boolean>) {
       state.loading = action.payload;
@@ -34,5 +39,5 @@ const postsSlice = createSlice({
   },
 });
 
-export const {setPosts, setLoading, setError, clearPosts} = postsSlice.actions;
+export const {setPosts, setLoading, setError, clearPosts, updateCommentPostNumber} = postsSlice.actions;
 export default postsSlice.reducer;
