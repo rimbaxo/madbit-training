@@ -11,7 +11,7 @@ const Post: React.FC<PostType> = (item: PostType) => {
   const navigation = useNavigation<HomeNavigationProp>();
 
   return (
-    <Pressable style={styles.post} onPress={() => navigation.navigate('PostDetails', { postId: id })}>
+    <Pressable style={styles.post} onPress={() => navigation.navigate('PostDetails', { ...item })}>
       <View style={styles.userPostTopInfo}>
         <View style={styles.postHeader}>
           <Image source={{ uri: user.picture }} style={styles.profilePicture} />

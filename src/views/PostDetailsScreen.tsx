@@ -8,57 +8,30 @@ import TextInputComponent from '../components/TextInputComponent';
 import { Colors, DEFAULT_USERPIC_URI, ENDPOINT_POST, formatReadableDate } from '../constants';
 import { useAppSelector } from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
-import { CommentResponse, FetchParams, PostType } from '../types';
-
-export type PostDetailsScreenProps = {
-  postId: number;
-};
+import { CommentBody, CommentRendered, CommentResponse, FetchParams, PostType } from '../types';
 
 const PostDetailsScreen: React.FC = () => {
   const route = useRoute();
 
   // TODO: passare tutte le info del post dalla navigazione senza fare la fetch per le info del post. La fetch del post però può servire in caso di update del post
-  const { postId } = route.params as PostDetailsScreenProps;
+  //FATTO
+  const { id, user, created_at, title, text } = route.params as PostType;
 
   const authUser = useAppSelector(state => state.auth);
 
   const [newComment, setNewComment] = useState('');
-  const [comments, setComments] = useState<CommentResponse[]>([]);
+  const [comments, setComments] = useState<CommentRendered[]>([]);
 
-  // TODO: ottimizza la lista creando un tipo di commento per lo stato con solo le ifno cjhe ti servono per mostrare i commenti, non tutte
+  // TODO: ottimizza la lista creando un tipo di commento per lo stato con solo le info che ti servono per mostrare i commenti, non tutte. FATTO
   // TODO: fare una header
+  // TODO: sistemare tastiera iphone (KEYBOARDAVOIDINGNEW non va...)
 
   // FETCH PER L'AGGIUNTA DI UN COMMENTO NUOVO
 
-  // TODO: questione ID del post (e di tutto in generale). Libreria uuidv4? però da una stringa non un number
-  const newCommentObj: CommentResponse = {
-    id: postId, //Number(formatReadableDate(Date.now.toString())),
-    text: newComment,
-    created_at: Date.now().toString(),
-    updated_at: Date.now().toString(),
-    user: {
-      id: authUser.id ?? 999,
-      email: authUser.email ?? '',
-      first_name: authUser.first_name ?? '',
-      last_name: authUser.last_name ?? '',
-      created_at: authUser.created_at ?? '',
-      full_name: authUser.full_name ?? '',
-      picture: authUser.picture ?? DEFAULT_USERPIC_URI
-    }
-  };
-
-  type CommentBodyType = {
-    text: string;
-  };
-
-  const body: CommentBodyType = {
-    text: newComment
-  };
-
-  const fetchPostNewComment: FetchParams<CommentBodyType> = {
-    endpoint: ENDPOINT_POST + '/' + postId.toString() + '/comments',
+  const fetchPostNewComment: FetchParams<CommentBody> = {
+    endpoint: ENDPOINT_POST + '/' + id.toString() + '/comments',
     method: 'POST',
-    body
+    body: { text: newComment }
   };
 
   const {
@@ -66,7 +39,7 @@ const PostDetailsScreen: React.FC = () => {
     error: errorComment,
     data: dataComment,
     fetchData: fetchAddNewComment
-  } = useFetch<CommentResponse, CommentBodyType>(fetchPostNewComment);
+  } = useFetch<CommentResponse, CommentBody>(fetchPostNewComment);
 
   useEffect(() => {
     if (errorComment) {
@@ -76,7 +49,7 @@ const PostDetailsScreen: React.FC = () => {
 
   // FETCH PER I COMMENTI ASSOCIATI A QUEL POST
   const fetchPostComments: FetchParams = {
-    endpoint: ENDPOINT_POST + '/' + postId.toString() + '/comments',
+    endpoint: ENDPOINT_POST + '/' + id.toString() + '/comments',
     method: 'GET'
   };
   const {
@@ -86,20 +59,21 @@ const PostDetailsScreen: React.FC = () => {
     fetchData: fetchCommentData
   } = useFetch<CommentResponse[]>(fetchPostComments);
 
-  // FETCH PER LE INFO DEL POST DELLA PAGINA
-  const fetchPost: FetchParams = {
-    endpoint: ENDPOINT_POST + '/' + postId.toString(),
-    method: 'GET'
-  };
-  const { loading, error, data, fetchData } = useFetch<PostType>(fetchPost);
-
   useEffect(() => {
-    fetchData();
     fetchCommentData();
-  }, [fetchData, fetchCommentData, dataComment]);
+  }, [fetchCommentData, dataComment]);
 
   useEffect(() => {
-    if (commentData) setComments(commentData);
+    if (commentData) {
+      const comments: CommentRendered[] = commentData.map(item => ({
+        text: item.text,
+        created_at: item.created_at,
+        username: item.user.full_name,
+        user_picture: item.user.picture
+      }));
+
+      setComments(comments);
+    }
   }, [commentData]);
 
   const insets = useSafeAreaInsets();
@@ -116,7 +90,15 @@ const PostDetailsScreen: React.FC = () => {
   const handleAddComment = () => {
     if (newComment.trim() && authUser) {
       fetchAddNewComment();
-      setComments([...comments, newCommentObj]);
+      setComments([
+        ...comments,
+        {
+          text: newComment,
+          created_at: Date.now.toString(),
+          username: authUser.full_name ?? '',
+          user_picture: authUser.picture ?? DEFAULT_USERPIC_URI
+        }
+      ]);
       setNewComment('');
     } else {
       Alert.alert('Comment cannot be empty');
@@ -133,18 +115,18 @@ const PostDetailsScreen: React.FC = () => {
           <Text style={styles.h2Text}>Posts</Text>
         </View>
 
-        {data ? (
+        {user ? (
           <View style={styles.postInfoContainer}>
             <View style={styles.userPostTopInfo}>
               <View style={styles.postHeader}>
-                <Image source={{ uri: data.user.picture }} style={styles.profilePicture} />
-                <Text style={styles.userName}>{data.user.full_name}</Text>
+                <Image source={{ uri: user.picture }} style={styles.profilePicture} />
+                <Text style={styles.userName}>{user.full_name}</Text>
               </View>
-              <Text style={styles.info}>{formatReadableDate(data.created_at)}</Text>
+              <Text style={styles.info}>{formatReadableDate(created_at)}</Text>
             </View>
             <View style={styles.separator} />
-            <Text style={styles.postTitle}>{data.title}</Text>
-            <Text style={styles.postContent}>{data.text}</Text>
+            <Text style={styles.postTitle}>{title}</Text>
+            <Text style={styles.postContent}>{text}</Text>
           </View>
         ) : null}
 
@@ -152,11 +134,11 @@ const PostDetailsScreen: React.FC = () => {
         <View style={styles.commentsContainer}>
           <View style={styles.commentsContainer}>
             {comments?.map(comment => (
-              <View key={comment.id} style={styles.commentContainer}>
+              <View style={styles.commentContainer}>
                 <View style={styles.commentHeader}>
                   <View style={styles.postHeader}>
-                    <Image source={{ uri: comment.user.picture }} style={styles.profilePicture} />
-                    <Text style={{ color: Colors.lightRose, fontWeight: 'bold' }}>{comment.user.full_name}</Text>
+                    <Image source={{ uri: comment.user_picture }} style={styles.profilePicture} />
+                    <Text style={{ color: Colors.lightRose, fontWeight: 'bold' }}>{comment.username}</Text>
                   </View>
                   <Text style={styles.info}>{formatReadableDate(comment.created_at)}</Text>
                 </View>

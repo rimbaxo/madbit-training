@@ -60,7 +60,6 @@ export type PostType = {
 export type CommentResponse = {
   id: number;
   text: string;
-
   created_at: string;
   updated_at: string;
   user: {
@@ -72,6 +71,17 @@ export type CommentResponse = {
     full_name: string;
     picture: string;
   };
+};
+
+export type CommentRendered = {
+  text: string;
+  created_at: string;
+  username: string;
+  user_picture: string;
+};
+
+export type CommentBody = {
+  text: string;
 };
 
 export type PostProps = {
@@ -104,7 +114,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 export type HomeStackParamList = {
   Home: undefined;
-  PostDetails: { postId: number };
+  PostDetails: PostType;
 };
 
 export type BottomTabParamList = {
