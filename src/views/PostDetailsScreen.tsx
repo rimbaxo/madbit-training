@@ -2,7 +2,17 @@ import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TextInputComponent from '../components/TextInputComponent';
 import { Colors, DEFAULT_USERPIC_URI, ENDPOINT_POST, formatReadableDate } from '../constants';
@@ -144,7 +154,11 @@ const PostDetailsScreen: React.FC = () => {
           </View>
         </View>
       </ScrollView>
-      <View style={styles.commentInputContainer}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.select({ ios: 100, android: 500 })}
+      >
         <View style={styles.addCommentComponent}>
           <TextInputComponent
             style={{ flex: 1 }}
@@ -157,7 +171,7 @@ const PostDetailsScreen: React.FC = () => {
             <FontAwesomeIcon icon={faPaperPlane} color={Colors.backgroundSurfaces} />
           </Pressable>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -168,6 +182,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   sendButton: {
+    width: 40,
+    height: 40,
     backgroundColor: Colors.azure,
     padding: 10,
     borderRadius: 20,
@@ -204,21 +220,23 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     backgroundColor: Colors.darkRose
   },
+  commentsContainer: {
+    flex: 1,
+    backgroundColor: Colors.backgroundSurfaces
+  },
   addCommentComponent: {
+    borderTopWidth: 3,
+    height: 100,
+    borderColor: Colors.darkRose,
+    backgroundColor: Colors.backgroundSurfaces,
+    padding: 10,
+    marginTop: -100,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  commentsContainer: {
-    backgroundColor: Colors.backgroundSurfaces
-  },
-  commentInputContainer: {
-    padding: 10,
-    backgroundColor: Colors.backgroundSurfaces,
-    borderTopWidth: 3,
-    borderColor: Colors.darkRose
-  },
   commentContainer: {
+    flex: 1,
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: Colors.dark,
