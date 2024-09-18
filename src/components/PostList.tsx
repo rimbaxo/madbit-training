@@ -45,8 +45,6 @@ const PostList: React.FC = () => {
     }
   }, [data, error, dispatch]);
 
-  // TODO: capire che su alcuni post, quelli creati da te, sarà possibile creare alcune operazioni CRUD
-
   const renderPost = ({ item }: { item: PostType }) => <Post item={item} variant={LIST} />;
 
   const animatedValue = useRef(new Animated.Value(0)).current;

@@ -24,10 +24,10 @@ const PostDetailsScreen: React.FC = () => {
 
   const authUser = useAppSelector(state => state.auth);
 
+  const postInfo = useAppSelector(state => state.posts[id]);
+
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState<CommentInfo[]>([]);
-
-  // TODO: sistemare tastiera iphone. FATTO
 
   // FETCH PER L'AGGIUNTA DI UN COMMENTO NUOVO
   const fetchPostNewComment: FetchParams<CommentBody> = {

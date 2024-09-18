@@ -116,9 +116,17 @@ export type PostProps = {
   variant?: PostVariant;
 };
 
+export type PostUpdateProps = {
+  text: string;
+  title: string;
+  id: number;
+};
+
 export type HomeStackParamList = {
   Home: undefined;
   PostDetails: PostProps;
+  PostUpdate: PostUpdateProps;
+  Login: undefined;
 };
 
 export type BottomTabParamList = {

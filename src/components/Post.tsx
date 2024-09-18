@@ -11,10 +11,10 @@ import { HomeNavigationProp, PostProps } from '../types';
 
 const Post: React.FC<PostProps> = ({ item, variant }) => {
   const { id, user, created_at, title, text, comments_count } = item || {};
-  const { picture, full_name } = user || {};
+  const { picture, full_name, id: userId } = user || {};
   const navigation = useNavigation<HomeNavigationProp>();
 
-  const authUser = useAppSelector(state => state.auth);
+  const authUserId = useAppSelector(state => state.auth.id);
 
   return variant === LIST ? (
     <Pressable style={styles.post} onPress={() => navigation.navigate('PostDetails', { item, variant })}>
@@ -43,12 +43,16 @@ const Post: React.FC<PostProps> = ({ item, variant }) => {
       <Text style={styles.postTitle}>{title}</Text>
       <Text style={styles.postContent}>{text}</Text>
       <View style={styles.actionButtonsContainer}>
-        <Pressable style={styles.sendButton}>
-          <FontAwesomeIcon icon={faPenToSquare} color={Colors.backgroundSurfaces} />
-        </Pressable>
-        <Pressable style={styles.sendButton}>
-          <FontAwesomeIcon icon={faTrash} color={Colors.backgroundSurfaces} />
-        </Pressable>
+        {authUserId != undefined && userId != undefined && authUserId === userId ? (
+          <>
+            <Pressable style={styles.sendButton} onPress={() => navigation.navigate('PostUpdate', { title, text, id })}>
+              <FontAwesomeIcon icon={faPenToSquare} color={Colors.backgroundSurfaces} />
+            </Pressable>
+            <Pressable style={styles.sendButton}>
+              <FontAwesomeIcon icon={faTrash} color={Colors.backgroundSurfaces} />
+            </Pressable>
+          </>
+        ) : null}
       </View>
     </View>
   );

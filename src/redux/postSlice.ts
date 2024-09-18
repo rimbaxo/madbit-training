@@ -2,6 +2,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PostsState, PostType } from '../types';
+import { updatePostInfoReducer } from '../views/PostUpdateScreen';
 
 const initialState: PostsState = {
   posts: [],
@@ -25,6 +26,14 @@ const postsSlice = createSlice({
         post.comments_count += 1;
       }
     },
+    updatePostContent(state: PostsState, action: PayloadAction<updatePostInfoReducer>){
+      const post = state.posts.find((post) => post.id === action.payload.id);
+      if (post) {
+        post.text = action.payload.newText;
+        post.title = action.payload.newTitle;
+        post.updated_at = action.payload.newUpdatedAt;
+      }
+    },
     setLoading(state: PostsState, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
@@ -38,5 +47,5 @@ const postsSlice = createSlice({
   },
 });
 
-export const {setPosts, setLoading, setError, clearPosts, updateCommentPostNumber} = postsSlice.actions;
+export const {setPosts, setLoading, setError, clearPosts, updateCommentPostNumber, updatePostContent} = postsSlice.actions;
 export default postsSlice.reducer;

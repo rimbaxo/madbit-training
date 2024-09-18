@@ -7,12 +7,14 @@ import { useAppSelector } from '../hooks/useAppSelector';
 import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomHeader from '../components/CustomHeader';
+import { HomeStackParamList } from '../types';
 import LoginScreen from '../views/LoginScreen';
 import PostDetailsScreen from '../views/PostDetailsScreen';
+import PostUpdateScreen from '../views/PostUpdateScreen';
 import UserNavigator from './UserNavigator';
 
 const RootNavigator = () => {
-  const Stack = createNativeStackNavigator();
+  const Stack = createNativeStackNavigator<HomeStackParamList>();
   const accessToken = useAppSelector(state => state.auth.accessToken);
 
   const insets = useSafeAreaInsets();
@@ -33,12 +35,13 @@ const RootNavigator = () => {
         <Stack.Navigator>
           {accessToken ? (
             <>
-              <Stack.Screen name="User" component={UserNavigator} options={{ headerShown: false }} />
+              <Stack.Screen name="Home" component={UserNavigator} options={{ headerShown: false }} />
               <Stack.Screen
                 name="PostDetails"
                 component={PostDetailsScreen}
                 options={{ header: () => <CustomHeader /> }}
               />
+              <Stack.Screen name="PostUpdate" component={PostUpdateScreen} options={{ headerShown: false }} />
             </>
           ) : (
             <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
