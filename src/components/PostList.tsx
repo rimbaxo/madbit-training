@@ -13,12 +13,6 @@ const PostList: React.FC = () => {
   const dispatch = useAppDispatch();
   const [isEndReached, setIsEndReached] = useState(false); // Stato per tracciare se siamo alla fine della lista
 
-  // Renderizzo nuovamente la lista di post quando ritorno in focus su di essa. Questo mi serve per aggiornare la label di "Comments" associati al post
-  // const focus = useIsFocused();
-  // useEffect(() => {
-  //   if (focus) fetchData();
-  // }, [focus]);
-
   const { posts } = useAppSelector(state => state.posts);
 
   const fetchObj: FetchParams = {
@@ -53,7 +47,7 @@ const PostList: React.FC = () => {
 
   // TODO: capire che su alcuni post, quelli creati da te, sarà possibile creare alcune operazioni CRUD
 
-  const renderPost = ({ item }: { item: PostType }) => <Post {...item} variant={LIST} />;
+  const renderPost = ({ item }: { item: PostType }) => <Post item={item} variant={LIST} />;
 
   const animatedValue = useRef(new Animated.Value(0)).current;
 

@@ -12,24 +12,21 @@ import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
 import { updateCommentPostNumber } from '../redux/postSlice';
-import { CommentBody, CommentRendered, CommentResponse, FetchParams, PostType } from '../types';
+import { CommentBody, CommentInfo, CommentResponse, FetchParams, PostProps } from '../types';
 
 const PostDetailsScreen: React.FC = () => {
   const route = useRoute();
 
-  // TODO: passare tutte le info del post dalla navigazione senza fare la fetch per le info del post. La fetch del post però può servire in caso di update del post
-  //FATTO
-  const { id, user, created_at, title, text } = route.params as PostType;
+  const { item } = (route.params as PostProps) || {};
+  const { id } = item || {};
 
   const dispatch = useAppDispatch();
 
   const authUser = useAppSelector(state => state.auth);
 
   const [newComment, setNewComment] = useState('');
-  const [comments, setComments] = useState<CommentRendered[]>([]);
+  const [comments, setComments] = useState<CommentInfo[]>([]);
 
-  // TODO: ottimizza la lista creando un tipo di commento per lo stato con solo le info che ti servono per mostrare i commenti, non tutte. FATTO
-  // TODO: fare una header. FATTO
   // TODO: sistemare tastiera iphone. FATTO
 
   // FETCH PER L'AGGIUNTA DI UN COMMENTO NUOVO
@@ -52,6 +49,8 @@ const PostDetailsScreen: React.FC = () => {
     }
   }, [errorComment]);
 
+  // TODO: usa componente https://kirillzyusko.github.io/react-native-keyboard-controller/docs/api/components/keyboard-aware-scroll-view
+
   // FETCH PER I COMMENTI ASSOCIATI A QUEL POST
   const fetchPostComments: FetchParams = {
     endpoint: ENDPOINT_POST + '/' + id.toString() + '/comments',
@@ -70,7 +69,7 @@ const PostDetailsScreen: React.FC = () => {
 
   useEffect(() => {
     if (commentData) {
-      const comments: CommentRendered[] = commentData.map(item => ({
+      const comments: CommentInfo[] = commentData.map(item => ({
         text: item.text,
         created_at: item.created_at,
         username: item.user.full_name,
@@ -112,14 +111,15 @@ const PostDetailsScreen: React.FC = () => {
   return (
     <View style={backgroundStyle}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {user ? <Post {...(route.params as PostType)} /> : null}
+        <Post item={item} />
         <Text style={styles.h1Text}>Comments</Text>
         <View style={styles.commentsContainer}>
           {comments?.map(comment => (
-            <Comment {...comment} />
+            <Comment comment={comment} />
           ))}
         </View>
       </ScrollView>
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -127,6 +127,7 @@ const PostDetailsScreen: React.FC = () => {
       >
         <View style={styles.addCommentComponent}>
           <TextInputComponent
+            secureTextEntry
             style={{ flex: 1 }}
             value={newComment}
             placeholder="Add a comment..."

@@ -1,21 +1,27 @@
+import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { Colors, FLAT, formatReadableDate, LIST } from '../constants';
-import { HomeNavigationProp, PostType } from '../types';
+import { Colors, formatReadableDate, LIST } from '../constants';
+import { useAppSelector } from '../hooks/useAppSelector';
+import { HomeNavigationProp, PostProps } from '../types';
 
 // Sarebbe bello implementare una funzione che fa allargare il post se si vuole vedere di più, mi serve tempo però non riesco immedita. Pensavo di si
 
-const Post: React.FC<PostType> = (item: PostType) => {
-  const { id, user, created_at, title, text, comments_count, variant } = item;
+const Post: React.FC<PostProps> = ({ item, variant }) => {
+  const { id, user, created_at, title, text, comments_count } = item || {};
+  const { picture, full_name } = user || {};
   const navigation = useNavigation<HomeNavigationProp>();
 
+  const authUser = useAppSelector(state => state.auth);
+
   return variant === LIST ? (
-    <Pressable style={styles.post} onPress={() => navigation.navigate('PostDetails', { ...item, variant: FLAT })}>
+    <Pressable style={styles.post} onPress={() => navigation.navigate('PostDetails', { item, variant })}>
       <View style={styles.userPostTopInfo}>
         <View style={styles.postHeader}>
-          <Image source={{ uri: user.picture }} style={styles.profilePicture} />
-          <Text style={styles.userName}>{user.full_name}</Text>
+          <Image source={{ uri: picture }} style={styles.profilePicture} />
+          <Text style={styles.userName}>{full_name ?? 'ISACCO'}</Text>
         </View>
         <Text style={styles.info}>{formatReadableDate(created_at)}</Text>
       </View>
@@ -28,14 +34,22 @@ const Post: React.FC<PostType> = (item: PostType) => {
     <View style={styles.postInfoContainer}>
       <View style={styles.userPostTopInfo}>
         <View style={styles.postHeader}>
-          <Image source={{ uri: user.picture }} style={styles.profilePicture} />
-          <Text style={styles.userName}>{user.full_name}</Text>
+          <Image source={{ uri: picture }} style={styles.profilePicture} />
+          <Text style={styles.userName}>{full_name || 'ISACCO'}</Text>
         </View>
         <Text style={styles.info}>{formatReadableDate(created_at)}</Text>
       </View>
       <View style={styles.postSeparatorLine} />
       <Text style={styles.postTitle}>{title}</Text>
       <Text style={styles.postContent}>{text}</Text>
+      <View style={styles.actionButtonsContainer}>
+        <Pressable style={styles.sendButton}>
+          <FontAwesomeIcon icon={faPenToSquare} color={Colors.backgroundSurfaces} />
+        </Pressable>
+        <Pressable style={styles.sendButton}>
+          <FontAwesomeIcon icon={faTrash} color={Colors.backgroundSurfaces} />
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -102,6 +116,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 5
+  },
+  sendButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: Colors.azure,
+    padding: 10,
+    marginRight: 10,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  actionButtonsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    top: 5
   }
 });
 

@@ -40,7 +40,7 @@ export type GetMeType = {
 
 //TYPES PER I POSTS
 
-export type Variant = 'LIST' | 'FLAT';
+export type PostVariant = 'LIST' | 'FLAT';
 
 export type PostType = {
   id: number;
@@ -58,7 +58,6 @@ export type PostType = {
     full_name: string;
     picture: string;
   };
-  variant?: Variant;
 };
 
 export type CommentResponse = {
@@ -77,23 +76,19 @@ export type CommentResponse = {
   };
 };
 
-export type CommentRendered = {
+export type CommentInfo = {
   text: string;
   created_at: string;
   username: string;
   user_picture: string;
 };
 
-export type CommentBody = {
-  text: string;
+export type CommentProps = {
+  comment: CommentInfo;
 };
 
-export type PostProps = {
-  title: string;
+export type CommentBody = {
   text: string;
-  created_at: string;
-  comments_count: number;
-  fullName: string;
 };
 
 // TYPES PER USERHEADER
@@ -116,9 +111,14 @@ export type FetchParams<R = undefined> = {
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { StackNavigationProp } from '@react-navigation/stack';
 
+export type PostProps = {
+  item: PostType;
+  variant?: PostVariant;
+};
+
 export type HomeStackParamList = {
   Home: undefined;
-  PostDetails: PostType;
+  PostDetails: PostProps;
 };
 
 export type BottomTabParamList = {

@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import CustomHeader from '../components/CustomHeader';
 import { Colors } from '../constants';
 import { BottomTabParamList } from '../types';
 import UserInfoScreen from '../views/UserInfoScreen';
@@ -26,6 +25,9 @@ const BlurBackground = ({ screenName }) => {
   );
 };
 
+// TODO: sistema la navigazione per nascondere la tabBar
+// https://reactnavigation.org/docs/hiding-tabbar-in-screens
+
 const UserNavigator = () => {
   return (
     <Tab.Navigator
@@ -47,9 +49,8 @@ const UserNavigator = () => {
           const isTabBarVisible = routeName !== 'PostDetails';
           return {
             tabBarStyle: [{ display: isTabBarVisible ? 'flex' : 'none' }, styles.tabBarStyle],
-            headerShown: !isTabBarVisible,
-            tabBarLabel: 'Home',
-            header: () => (!isTabBarVisible ? <CustomHeader /> : null)
+            headerShown: false,
+            tabBarLabel: 'Home'
           };
         }}
       />

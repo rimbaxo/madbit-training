@@ -1,19 +1,21 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { Colors, formatReadableDate } from '../constants';
-import { CommentRendered } from '../types';
+import { CommentProps } from '../types';
 
-const Comment: React.FC<CommentRendered> = ({ ...props }) => {
+const Comment: React.FC<CommentProps> = ({ comment }) => {
+  const { text, created_at, username, user_picture } = comment || {};
+
   return (
     <View style={styles.commentContainer}>
       <View style={styles.commentHeader}>
         <View style={styles.postHeader}>
-          <Image source={{ uri: props.user_picture }} style={styles.profilePicture} />
-          <Text style={{ color: Colors.lightRose, fontWeight: 'bold' }}>{props.username}</Text>
+          <Image source={{ uri: user_picture }} style={styles.profilePicture} />
+          <Text style={{ color: Colors.lightRose, fontWeight: 'bold' }}>{username}</Text>
         </View>
-        <Text style={styles.info}>{formatReadableDate(props.created_at)}</Text>
+        <Text style={styles.info}>{formatReadableDate(created_at)}</Text>
       </View>
-      <Text style={styles.commentText}>{props.text}</Text>
+      <Text style={styles.commentText}>{text}</Text>
     </View>
   );
 };

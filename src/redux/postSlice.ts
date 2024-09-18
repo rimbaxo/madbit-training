@@ -19,7 +19,6 @@ const postsSlice = createSlice({
       state.error = null;
     },
     updateCommentPostNumber(state: PostsState, action: PayloadAction<number>){
-      //TODO: aggiornare manualmente il numero di commenti per il mio dato post. FATTO
       const postId = action.payload;
       const post = state.posts.find((post) => post.id === postId);
       if (post) {
