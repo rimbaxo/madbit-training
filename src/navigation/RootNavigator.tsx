@@ -6,7 +6,9 @@ import { useAppSelector } from '../hooks/useAppSelector';
 
 import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import CustomHeader from '../components/CustomHeader';
 import LoginScreen from '../views/LoginScreen';
+import PostDetailsScreen from '../views/PostDetailsScreen';
 import UserNavigator from './UserNavigator';
 
 const RootNavigator = () => {
@@ -30,7 +32,14 @@ const RootNavigator = () => {
       <NavigationContainer>
         <Stack.Navigator>
           {accessToken ? (
-            <Stack.Screen name="User" component={UserNavigator} options={{ headerShown: false }} />
+            <>
+              <Stack.Screen name="User" component={UserNavigator} options={{ headerShown: false }} />
+              <Stack.Screen
+                name="PostDetails"
+                component={PostDetailsScreen}
+                options={{ header: () => <CustomHeader /> }}
+              />
+            </>
           ) : (
             <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           )}
