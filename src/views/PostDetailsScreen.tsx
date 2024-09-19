@@ -71,7 +71,10 @@ const PostDetailsScreen: React.FC = () => {
         text: item.text,
         created_at: item.created_at,
         username: item.user.full_name,
-        user_picture: item.user.picture
+        user_picture: item.user.picture,
+        userId: item.user.id,
+        postId: id,
+        id: item.id
       }));
 
       setComments(comments);
@@ -87,16 +90,22 @@ const PostDetailsScreen: React.FC = () => {
     paddingRight: insets.right
   };
 
+  // TODO: faccio la modifica dei commenti qui dentro così posso fare la fetch, con tutte le modali ecc
+
   const handleAddComment = () => {
     if (newComment.trim() && authUser) {
-      fetchAddNewComment();
+      console.log('NEWCOMMENT', newComment);
+      fetchAddNewComment(); // Continue in the UseEffect, line 64
       setComments([
         ...comments,
         {
           text: newComment,
           created_at: Date.now.toString(),
           username: authUser.full_name ?? '',
-          user_picture: authUser.picture ?? DEFAULT_USERPIC_URI
+          user_picture: authUser.picture ?? DEFAULT_USERPIC_URI,
+          userId: authUser.id ?? -1,
+          postId: id,
+          id: null
         }
       ]);
       setNewComment('');
@@ -112,8 +121,8 @@ const PostDetailsScreen: React.FC = () => {
         <Post item={item} />
         <Text style={styles.h1Text}>Comments</Text>
         <View style={styles.commentsContainer}>
-          {comments?.map(comment => (
-            <Comment comment={comment} />
+          {comments?.map((comment, idx) => (
+            <Comment key={idx} comment={comment} />
           ))}
         </View>
       </ScrollView>
@@ -125,7 +134,6 @@ const PostDetailsScreen: React.FC = () => {
       >
         <View style={styles.addCommentComponent}>
           <TextInputComponent
-            secureTextEntry
             style={{ flex: 1 }}
             value={newComment}
             placeholder="Add a comment..."

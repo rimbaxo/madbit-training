@@ -34,6 +34,14 @@ const postsSlice = createSlice({
         post.updated_at = action.payload.newUpdatedAt;
       }
     },
+    // updateComment(state: PostsState, action: PayloadAction<CommentResponse>){
+    //   const post = state.posts.find((post) => post.id === action.payload.id);
+    //   if (post) {
+    //     post = action.payload.newText;
+    //     post.title = action.payload.newTitle;
+    //     post.updated_at = action.payload.newUpdatedAt;
+    //   }
+    // },
     deletePostReducer(state: PostsState, action: PayloadAction<number>){
       const post = state.posts.find((post) => post.id === action.payload);
       if (post) {

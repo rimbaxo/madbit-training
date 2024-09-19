@@ -1,7 +1,15 @@
 // src/components/PostList.tsx
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, Animated, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, View } from 'react-native';
-import { ENDPOINT_POST, LIST } from '../constants';
+import {
+  Alert,
+  Animated,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  RefreshControl,
+  StyleSheet,
+  View
+} from 'react-native';
+import { Colors, ENDPOINT_POST, LIST } from '../constants';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
@@ -12,8 +20,14 @@ import Post from './Post';
 const PostList: React.FC = () => {
   const dispatch = useAppDispatch();
   const [isEndReached, setIsEndReached] = useState(false); // Stato per tracciare se siamo alla fine della lista
-
+  const [refreshing, setRefreshing] = useState(false);
   const { posts } = useAppSelector(state => state.posts);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchData();
+    setRefreshing(false);
+  };
 
   const fetchObj: FetchParams = {
     endpoint: ENDPOINT_POST,
@@ -87,7 +101,15 @@ const PostList: React.FC = () => {
         onEndReachedThreshold={0.5}
         onScroll={handleScroll}
         scrollEventThrottle={16}
-      />
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            progressBackgroundColor={Colors.light}
+            tintColor={Colors.light}
+          />
+        }
+      ></Animated.FlatList>
     </View>
   );
 };

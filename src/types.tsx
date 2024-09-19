@@ -81,6 +81,9 @@ export type CommentInfo = {
   created_at: string;
   username: string;
   user_picture: string;
+  userId: number;
+  postId: number;
+  id: number | null;
 };
 
 export type CommentProps = {
