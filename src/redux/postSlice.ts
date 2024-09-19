@@ -34,6 +34,12 @@ const postsSlice = createSlice({
         post.updated_at = action.payload.newUpdatedAt;
       }
     },
+    deletePostReducer(state: PostsState, action: PayloadAction<number>){
+      const post = state.posts.find((post) => post.id === action.payload);
+      if (post) {
+          state.posts = state.posts.filter((post) => post.id !== action.payload);
+      }
+    },
     setLoading(state: PostsState, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
@@ -47,5 +53,5 @@ const postsSlice = createSlice({
   },
 });
 
-export const {setPosts, setLoading, setError, clearPosts, updateCommentPostNumber, updatePostContent} = postsSlice.actions;
+export const {setPosts, setLoading, setError, clearPosts, updateCommentPostNumber, updatePostContent, deletePostReducer} = postsSlice.actions;
 export default postsSlice.reducer;

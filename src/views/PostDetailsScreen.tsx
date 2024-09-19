@@ -24,8 +24,6 @@ const PostDetailsScreen: React.FC = () => {
 
   const authUser = useAppSelector(state => state.auth);
 
-  const postInfo = useAppSelector(state => state.posts[id]);
-
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState<CommentInfo[]>([]);
 

@@ -1,11 +1,14 @@
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { Colors, formatReadableDate, LIST } from '../constants';
+import React, { useEffect } from 'react';
+import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Colors, ENDPOINT_POST, formatReadableDate, LIST } from '../constants';
+import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
-import { HomeNavigationProp, PostProps } from '../types';
+import useFetch from '../hooks/useFetch';
+import { deletePostReducer } from '../redux/postSlice';
+import { FetchParams, HomeNavigationProp, PostProps } from '../types';
 
 // Sarebbe bello implementare una funzione che fa allargare il post se si vuole vedere di più, mi serve tempo però non riesco immedita. Pensavo di si
 
@@ -15,6 +18,42 @@ const Post: React.FC<PostProps> = ({ item, variant }) => {
   const navigation = useNavigation<HomeNavigationProp>();
 
   const authUserId = useAppSelector(state => state.auth.id);
+
+  const dispatch = useAppDispatch();
+
+  const fetchDeletePost: FetchParams = {
+    endpoint: ENDPOINT_POST + '/' + id.toString(),
+    method: 'DELETE'
+  };
+
+  const { loading, error, data, fetchData } = useFetch(fetchDeletePost);
+
+  const deletePost = async () => {
+    await fetchData();
+  };
+
+  const handleDeletePost = () => {
+    Alert.alert('Sei sicuro di voler eliminare il questo post?', '', [
+      {
+        text: 'Si, voglio eliminare',
+        onPress: () => deletePost()
+      },
+      {
+        text: 'Indietro',
+        onPress: () => {},
+        style: 'cancel'
+      }
+    ]);
+  };
+
+  useEffect(() => {
+    if (data) {
+      dispatch(deletePostReducer(id));
+      navigation.goBack();
+    } else if (error) {
+      Alert.alert('Errore eliminazione post', error);
+    }
+  }, [data, error, loading, dispatch]);
 
   return variant === LIST ? (
     <Pressable style={styles.post} onPress={() => navigation.navigate('PostDetails', { item, variant })}>
@@ -48,7 +87,7 @@ const Post: React.FC<PostProps> = ({ item, variant }) => {
             <Pressable style={styles.sendButton} onPress={() => navigation.navigate('PostUpdate', { title, text, id })}>
               <FontAwesomeIcon icon={faPenToSquare} color={Colors.backgroundSurfaces} />
             </Pressable>
-            <Pressable style={styles.sendButton}>
+            <Pressable style={styles.sendButton} onPress={handleDeletePost}>
               <FontAwesomeIcon icon={faTrash} color={Colors.backgroundSurfaces} />
             </Pressable>
           </>
