@@ -48,3 +48,4 @@ export const DEFAULT_USERPIC_URI = 'https://via.placeholder.com/300x300.png/00cc
 
 export const LIST = 'LIST';
 export const FLAT = 'FLAT';
+export const ANNULLA = 'ANNULLA';

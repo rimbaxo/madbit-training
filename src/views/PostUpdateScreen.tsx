@@ -4,7 +4,7 @@ import { Alert, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Button from '../components/Button';
 import TextInputComponent from '../components/TextInputComponent';
-import { Colors, ENDPOINT_POST } from '../constants';
+import { ANNULLA, Colors, ENDPOINT_POST } from '../constants';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import useFetch from '../hooks/useFetch';
 import { updatePostContent } from '../redux/postSlice';
@@ -99,7 +99,7 @@ const PostUpdateScreen: React.FC = () => {
       </View>
       <View style={styles.buttonsContainer}>
         <Button title="Conferma" onPress={handleUpdatePost} />
-        <Button title="Annulla" onPress={() => navigation.goBack()} />
+        <Button title="Annulla" onPress={() => navigation.goBack()} variant={ANNULLA} />
       </View>
     </View>
   );

@@ -2,12 +2,15 @@ import React from 'react';
 import { Pressable, PressableProps, StyleSheet, Text } from 'react-native';
 import { Colors } from '../constants';
 
+type ButtonVariant = 'ANNULLA';
+
 type CustomButtonProps = PressableProps & {
   title: string;
   onPress: () => void;
+  variant?: ButtonVariant;
 };
 
-const Button: React.FC<CustomButtonProps> = ({ title, onPress }) => {
+const Button: React.FC<CustomButtonProps> = ({ title, onPress, variant }) => {
   return (
     <Pressable
       onPress={onPress}
@@ -15,6 +18,9 @@ const Button: React.FC<CustomButtonProps> = ({ title, onPress }) => {
         styles.button,
         {
           backgroundColor: pressed ? Colors.blue : Colors.azure
+        },
+        {
+          backgroundColor: variant ? Colors.darkRose : Colors.azure
         }
       ]}
     >
