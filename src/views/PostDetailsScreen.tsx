@@ -1,13 +1,24 @@
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faPenClip } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Button from '../components/Button';
 import Comment from '../components/Comment';
 import Post from '../components/Post';
 import TextInputComponent from '../components/TextInputComponent';
-import { Colors, DEFAULT_USERPIC_URI, ENDPOINT_POST } from '../constants';
+import { ANNULLA, Colors, ENDPOINT_POST } from '../constants';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
@@ -21,8 +32,10 @@ const PostDetailsScreen: React.FC = () => {
   const { id } = item || {};
 
   const dispatch = useAppDispatch();
+  const insets = useSafeAreaInsets();
 
   const authUser = useAppSelector(state => state.auth);
+  const authUserId = useAppSelector(state => state.auth.id);
 
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState<CommentInfo[]>([]);
@@ -62,14 +75,10 @@ const PostDetailsScreen: React.FC = () => {
   } = useFetch<CommentResponse[]>(fetchPostComments);
 
   useEffect(() => {
-    fetchCommentData();
-  }, [fetchCommentData, dataComment]);
-
-  useEffect(() => {
     if (commentData) {
       const comments: CommentInfo[] = commentData.map(item => ({
         text: item.text,
-        created_at: item.created_at,
+        updated_at: item.updated_at,
         username: item.user.full_name,
         user_picture: item.user.picture,
         userId: item.user.id,
@@ -81,8 +90,6 @@ const PostDetailsScreen: React.FC = () => {
     }
   }, [commentData]);
 
-  const insets = useSafeAreaInsets();
-
   const backgroundStyle = {
     flex: 1,
     backgroundColor: Colors.backgroundColor,
@@ -92,22 +99,46 @@ const PostDetailsScreen: React.FC = () => {
 
   // TODO: faccio la modifica dei commenti qui dentro così posso fare la fetch, con tutte le modali ecc
 
+  // FETCH PER LA MODIFICA DI UN COMMENTO
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editedText, setEditedText] = useState('');
+  const [currentCommentId, setCurrentCommentId] = useState<number | null>(null);
+
+  const handleOpenModal = (text: string, id: number | null) => {
+    setEditedText(text);
+    setCurrentCommentId(id);
+    setModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setModalVisible(false);
+  };
+
+  const body: CommentBody = {
+    text: editedText
+  };
+
+  const fetchPostUpdate: FetchParams<CommentBody> = {
+    endpoint: ENDPOINT_POST + '/' + id.toString() + '/comments/' + currentCommentId?.toString(),
+    method: 'PUT',
+    body
+  };
+  const {
+    loading,
+    error,
+    data: modifiedCommentData,
+    fetchData
+  } = useFetch<CommentResponse, CommentBody>(fetchPostUpdate);
+
+  const handleSave = async () => {
+    await fetchData();
+    setModalVisible(false);
+  };
+
   const handleAddComment = () => {
     if (newComment.trim() && authUser) {
       console.log('NEWCOMMENT', newComment);
-      fetchAddNewComment(); // Continue in the UseEffect, line 64
-      setComments([
-        ...comments,
-        {
-          text: newComment,
-          created_at: Date.now.toString(),
-          username: authUser.full_name ?? '',
-          user_picture: authUser.picture ?? DEFAULT_USERPIC_URI,
-          userId: authUser.id ?? -1,
-          postId: id,
-          id: null
-        }
-      ]);
+      fetchAddNewComment();
       setNewComment('');
       dispatch(updateCommentPostNumber(id));
     } else {
@@ -115,16 +146,56 @@ const PostDetailsScreen: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    fetchCommentData();
+  }, [fetchCommentData, dataComment, modifiedCommentData]);
+
   return (
     <View style={backgroundStyle}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Post item={item} />
         <Text style={styles.h1Text}>Comments</Text>
         <View style={styles.commentsContainer}>
-          {comments?.map((comment, idx) => (
-            <Comment key={idx} comment={comment} />
-          ))}
+          {comments?.map((comment, idx) => {
+            return (
+              <View style={styles.innerCommentsContainer}>
+                <Comment key={idx} comment={comment} />
+                {authUserId != undefined && comment.userId != undefined && authUserId === comment.userId ? (
+                  <Pressable
+                    style={styles.modifyCommentButton}
+                    onPress={() => handleOpenModal(comment.text, comment.id)}
+                  >
+                    <FontAwesomeIcon icon={faPenClip} color={Colors.backgroundSurfaces} size={10} />
+                  </Pressable>
+                ) : null}
+              </View>
+            );
+          })}
         </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <KeyboardAvoidingView style={styles.modalContainer} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalTitle}>Edit Comment</Text>
+              <TextInputComponent
+                placeholder=""
+                multiline
+                style={{ height: 'auto' }}
+                value={editedText}
+                onChangeText={setEditedText}
+                autoFocus
+              />
+              <View style={styles.buttonContainer}>
+                <Button title="Save" onPress={handleSave} />
+                <Button title="Cancel" onPress={handleCancel} variant={ANNULLA} />
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+        </Modal>
       </ScrollView>
 
       <KeyboardAvoidingView
@@ -159,6 +230,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  innerCommentsContainer: {
+    padding: 5,
+    display: 'flex',
+    flexDirection: 'row'
+  },
   h1Text: {
     color: Colors.light,
     fontSize: 24,
@@ -191,6 +267,42 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.lightRose,
     opacity: 0.7
+  },
+  modifyCommentButton: {
+    width: 22,
+    height: 22,
+    backgroundColor: Colors.azure,
+    right: 5,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.75)'
+  },
+  modalView: {
+    width: '80%',
+    backgroundColor: Colors.backgroundSurfaces,
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: Colors.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.lilla,
+    marginBottom: 10
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center'
   }
 });
 

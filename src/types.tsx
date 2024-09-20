@@ -78,7 +78,7 @@ export type CommentResponse = {
 
 export type CommentInfo = {
   text: string;
-  created_at: string;
+  updated_at: string;
   username: string;
   user_picture: string;
   userId: number;
