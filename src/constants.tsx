@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
 export const Colors = {
@@ -49,3 +50,33 @@ export const DEFAULT_USERPIC_URI = 'https://via.placeholder.com/300x300.png/00cc
 export const LIST = 'LIST';
 export const FLAT = 'FLAT';
 export const ANNULLA = 'ANNULLA';
+
+// FUNZIONI PER IL TOKEN
+
+export const saveToken = async (token: string) => {
+  try {
+    await AsyncStorage.setItem('authToken', token);
+  } catch (e) {
+    console.error('Errore durante il salvataggio del token:', e);
+  }
+};
+
+export const getToken = async () => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    if (token !== null) {
+      return token;
+    }
+  } catch (e) {
+    console.error('Errore durante il recupero del token:', e);
+  }
+  return null;
+};
+
+export const removeToken = async () => {
+  try {
+    await AsyncStorage.removeItem('authToken');
+  } catch (e) {
+    console.error('Errore durante la rimozione del token:', e);
+  }
+};

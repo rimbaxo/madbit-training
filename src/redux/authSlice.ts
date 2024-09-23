@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { removeToken } from '../constants';
 import { AuthState } from '../types';
 
 const initialState: AuthState = {
@@ -34,6 +35,7 @@ const authSlice = createSlice({
       state.picture = action.payload.picture;
     },
     logout(state: AuthState) {
+      removeToken()
       state.accessToken = undefined;
       state.full_name = undefined;
       state.email = undefined;

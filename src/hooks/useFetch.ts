@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
-import { BASE_URL } from '../constants';
+import { BASE_URL, getToken } from '../constants';
 import { FetchParams, UseFetchState } from '../types';
-import { useAppSelector } from './useAppSelector';
 
 // Qui assegno di default il valore undefined al secondo tipo generico perchè nelle GET non ho il body
 const useFetch = <T, R = undefined>({ endpoint, method, body }: FetchParams<R>) => {
@@ -11,7 +10,8 @@ const useFetch = <T, R = undefined>({ endpoint, method, body }: FetchParams<R>) 
     data: undefined,
   });
 
-  const token = useAppSelector(stato => stato.auth.accessToken);
+  // TODO: salvare il token solo su asyncstorage e non su redux
+  //const token = getToken()//useAppSelector(stato => stato.auth.accessToken);
 
   const fetchData = useCallback(async () => {
     // Qui devo mettere prevState altrimenti se usassi lo state del componente andrebbe ancora in loop infinito
@@ -20,6 +20,8 @@ const useFetch = <T, R = undefined>({ endpoint, method, body }: FetchParams<R>) 
       loading: true,
       error: null,
     }));
+
+    const token = await getToken(); 
 
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
@@ -54,7 +56,7 @@ const useFetch = <T, R = undefined>({ endpoint, method, body }: FetchParams<R>) 
         data: undefined,
       });
     }
-  }, [endpoint, method, body, token]);
+  }, [endpoint, method, body]);
 
   return {
     ...state,

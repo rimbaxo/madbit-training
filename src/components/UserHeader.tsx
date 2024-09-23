@@ -2,7 +2,7 @@ import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'; // 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Colors } from '../constants';
+import { Colors, removeToken } from '../constants';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { logout } from '../redux/authSlice';
@@ -26,6 +26,7 @@ const UserHeader: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    removeToken();
   };
 
   return (

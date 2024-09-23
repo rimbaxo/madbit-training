@@ -3,7 +3,7 @@ import { Alert, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Button from '../components/Button';
 import TextInputComponent from '../components/TextInputComponent';
-import { Colors, ENDPOINT_LOGIN } from '../constants';
+import { Colors, ENDPOINT_LOGIN, saveToken } from '../constants';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import useFetch from '../hooks/useFetch';
 import { setAccessToken } from '../redux/authSlice';
@@ -43,7 +43,8 @@ const LoginScreen: React.FC = () => {
 
   useEffect(() => {
     if (data?.access_token) {
-      dispatch(setAccessToken(data?.access_token));
+      dispatch(setAccessToken(data.access_token));
+      saveToken(data.access_token);
     } else if (error) {
       Alert.alert('Errore di login', error);
     }

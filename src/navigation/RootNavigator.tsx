@@ -1,12 +1,12 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'react-native';
-import { Colors } from '../constants';
-import { useAppSelector } from '../hooks/useAppSelector';
+import { Colors, getToken } from '../constants';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomHeader from '../components/CustomHeader';
+import { useAppSelector } from '../hooks/useAppSelector';
 import { HomeStackParamList } from '../types';
 import LoginScreen from '../views/LoginScreen';
 import PostDetailsScreen from '../views/PostDetailsScreen';
@@ -16,6 +16,18 @@ import UserNavigator from './UserNavigator';
 const RootNavigator = () => {
   const Stack = createNativeStackNavigator<HomeStackParamList>();
   const accessToken = useAppSelector(state => state.auth.accessToken);
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = await getToken();
+      if (token) {
+        setIsAuthenticated(true);
+      }
+    };
+    checkAuth();
+  }, []);
 
   const insets = useSafeAreaInsets();
 
@@ -33,7 +45,7 @@ const RootNavigator = () => {
       <StatusBar backgroundColor={backgroundStyle.backgroundColor} />
       <NavigationContainer>
         <Stack.Navigator>
-          {accessToken ? (
+          {accessToken || isAuthenticated ? (
             <>
               <Stack.Screen name="Home" component={UserNavigator} options={{ headerShown: false }} />
               <Stack.Screen
