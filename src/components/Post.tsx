@@ -84,7 +84,10 @@ const Post: React.FC<PostProps> = ({ item, variant }) => {
       <View style={styles.actionButtonsContainer}>
         {authUserId != undefined && userId != undefined && authUserId === userId ? (
           <>
-            <Pressable style={styles.sendButton} onPress={() => navigation.navigate('PostUpdate', { title, text, id })}>
+            <Pressable
+              style={styles.sendButton}
+              onPress={() => navigation.navigate('PostUpdate', { title, text, id, action: 'PUT' })}
+            >
               <FontAwesomeIcon icon={faPenToSquare} color={Colors.backgroundSurfaces} />
             </Pressable>
             <Pressable style={styles.sendButton} onPress={handleDeletePost}>

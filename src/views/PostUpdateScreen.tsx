@@ -6,8 +6,9 @@ import Button from '../components/Button';
 import TextInputComponent from '../components/TextInputComponent';
 import { ANNULLA, Colors, ENDPOINT_POST } from '../constants';
 import { useAppDispatch } from '../hooks/useAppDispatch';
+import { useAppSelector } from '../hooks/useAppSelector';
 import useFetch from '../hooks/useFetch';
-import { updatePostContent } from '../redux/postSlice';
+import { setPosts, updatePostContent } from '../redux/postSlice';
 import { FetchParams, HomeNavigationProp, PostType, PostUpdateProps } from '../types';
 
 export type updatePostInfoReducer = {
@@ -20,10 +21,11 @@ export type updatePostInfoReducer = {
 const PostUpdateScreen: React.FC = () => {
   const route = useRoute();
 
-  const { text, id, title } = (route.params as PostUpdateProps) || {};
+  const { text, id, title, action } = (route.params as PostUpdateProps) || {};
+  const { posts } = useAppSelector(state => state.posts);
 
-  const [newTitle, setNewTitle] = useState<string>(title);
-  const [newText, setNewText] = useState<string>(text);
+  const [newTitle, setNewTitle] = useState<string>(title ?? '');
+  const [newText, setNewText] = useState<string>(text ?? '');
 
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<HomeNavigationProp>();
@@ -39,29 +41,43 @@ const PostUpdateScreen: React.FC = () => {
     paddingRight: insets.right
   };
 
-  type updatePostInfo = {
+  type PostInfo = {
     title: string;
     text: string;
   };
 
-  const body: updatePostInfo = {
+  const body: PostInfo = {
     title: newTitle,
     text: newText
   };
 
-  const fetchPostUpdate: FetchParams<updatePostInfo> = {
-    endpoint: ENDPOINT_POST + '/' + id.toString(),
-    method: 'PUT',
+  const fetchPostUpdate: FetchParams<PostInfo> = {
+    endpoint: action === 'PUT' ? ENDPOINT_POST + '/' + id?.toString() : ENDPOINT_POST,
+    method: action,
     body
   };
-  const { loading, error, data, fetchData } = useFetch<PostType, updatePostInfo>(fetchPostUpdate);
+  const { loading, error, data, fetchData } = useFetch<PostType, PostInfo>(fetchPostUpdate);
 
   const handleUpdatePost = async () => {
     await fetchData();
   };
 
+  const handleCancel = () => {
+    Alert.alert('Annullare la creazione di un nuovo post?', '', [
+      {
+        text: 'Si',
+        onPress: () => navigation.goBack()
+      },
+      {
+        text: 'No',
+        onPress: () => {},
+        style: 'cancel'
+      }
+    ]);
+  };
+
   useEffect(() => {
-    if (data) {
+    if (data && action === 'PUT') {
       const newPostInfo: updatePostInfoReducer = {
         newText: data.text,
         newTitle: data.title,
@@ -70,6 +86,9 @@ const PostUpdateScreen: React.FC = () => {
       };
       dispatch(updatePostContent(newPostInfo));
       navigation.navigate('PostDetails', { item: data });
+    } else if (data && action === 'POST') {
+      dispatch(setPosts([...posts, data]));
+      navigation.goBack();
     } else if (error) {
       Alert.alert('Errore di update', error);
     }
@@ -81,7 +100,7 @@ const PostUpdateScreen: React.FC = () => {
         <Text style={styles.h1Text}>Post Title</Text>
         <TextInputComponent
           value={newTitle}
-          placeholder="Post Title"
+          placeholder="Title..."
           onChangeText={val => {
             setNewTitle(val);
           }}
@@ -99,7 +118,7 @@ const PostUpdateScreen: React.FC = () => {
       </View>
       <View style={styles.buttonsContainer}>
         <Button title="Conferma" onPress={handleUpdatePost} />
-        <Button title="Annulla" onPress={() => navigation.goBack()} variant={ANNULLA} />
+        <Button title="Annulla" onPress={handleCancel} variant={ANNULLA} />
       </View>
     </View>
   );

@@ -97,8 +97,6 @@ const PostDetailsScreen: React.FC = () => {
     paddingRight: insets.right
   };
 
-  // TODO: faccio la modifica dei commenti qui dentro così posso fare la fetch, con tutte le modali ecc
-
   // FETCH PER LA MODIFICA DI UN COMMENTO
   const [modalVisible, setModalVisible] = useState(false);
   const [editedText, setEditedText] = useState('');
@@ -118,6 +116,7 @@ const PostDetailsScreen: React.FC = () => {
     text: editedText
   };
 
+  // TODO: memoizza un po' le cose che possono essere memoizzate
   const fetchPostUpdate: FetchParams<CommentBody> = {
     endpoint: ENDPOINT_POST + '/' + id.toString() + '/comments/' + currentCommentId?.toString(),
     method: 'PUT',
@@ -137,7 +136,6 @@ const PostDetailsScreen: React.FC = () => {
 
   const handleAddComment = () => {
     if (newComment.trim() && authUser) {
-      console.log('NEWCOMMENT', newComment);
       fetchAddNewComment();
       setNewComment('');
       dispatch(updateCommentPostNumber(id));

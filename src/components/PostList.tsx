@@ -1,5 +1,5 @@
 // src/components/PostList.tsx
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   Animated,
@@ -21,7 +21,16 @@ const PostList: React.FC = () => {
   const dispatch = useAppDispatch();
   const [isEndReached, setIsEndReached] = useState(false); // Stato per tracciare se siamo alla fine della lista
   const [refreshing, setRefreshing] = useState(false);
+
+  const [newPostAdded, setNewPostAdded] = useState(false);
+
   const { posts } = useAppSelector(state => state.posts);
+
+  const memoizedPosts = useMemo(() => posts, [posts]);
+
+  useEffect(() => {
+    setNewPostAdded(true);
+  }, [memoizedPosts]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -46,10 +55,11 @@ const PostList: React.FC = () => {
 
   // Il fetch avviene solo se i post non sono stati precedentemente caricati
   useEffect(() => {
-    if (!posts.length) {
+    if (!posts.length || newPostAdded) {
       fetchData();
+      setNewPostAdded(false);
     }
-  }, [fetchData, posts]);
+  }, [fetchData, posts, memoizedPosts]);
 
   useEffect(() => {
     if (data) {

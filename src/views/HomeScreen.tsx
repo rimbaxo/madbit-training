@@ -1,16 +1,21 @@
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import PostList from '../components/PostList';
 import { Colors, ENDPOINT_GETME } from '../constants';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import useFetch from '../hooks/useFetch';
 import { setUserInfo } from '../redux/authSlice';
-import { FetchParams, GetMeType } from '../types';
+import { FetchParams, GetMeType, HomeNavigationProp } from '../types';
 
 const HomeScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
+
+  const navigation = useNavigation<HomeNavigationProp>();
 
   const backgroundStyle = {
     flex: 1,
@@ -58,6 +63,11 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={backgroundStyle}>
+      <View style={styles.newPostButtonContainer}>
+        <Pressable style={styles.newPostButton} onPress={() => navigation.navigate('PostUpdate', { action: 'POST' })}>
+          <FontAwesomeIcon icon={faPlus} color={Colors.backgroundSurfaces} />
+        </Pressable>
+      </View>
       <View style={styles.postsContainer}>
         <PostList />
       </View>
@@ -75,6 +85,31 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 8
+  },
+  newPostButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: Colors.azure,
+    padding: 10,
+    marginRight: 10,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: Colors.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4
+  },
+  newPostButtonContainer: {
+    position: 'absolute',
+    top: 80,
+    right: 0,
+    elevation: 5,
+    zIndex: 5,
+    shadowColor: Colors.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4
   }
 });
 

@@ -120,9 +120,10 @@ export type PostProps = {
 };
 
 export type PostUpdateProps = {
-  text: string;
-  title: string;
-  id: number;
+  text?: string;
+  title?: string;
+  id?: number;
+  action: FetchMethod;
 };
 
 export type HomeStackParamList = {
