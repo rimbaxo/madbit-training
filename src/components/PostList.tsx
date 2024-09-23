@@ -22,10 +22,10 @@ const PostList: React.FC = () => {
   const [isEndReached, setIsEndReached] = useState(false); // Stato per tracciare se siamo alla fine della lista
   const [refreshing, setRefreshing] = useState(false);
 
+  // stato che mi serve per vedere se è stato aggiunto un nuovo post. Nel caso, forzo una fetch (line 59)
   const [newPostAdded, setNewPostAdded] = useState(false);
 
   const { posts } = useAppSelector(state => state.posts);
-
   const memoizedPosts = useMemo(() => posts, [posts]);
 
   useEffect(() => {
@@ -53,13 +53,13 @@ const PostList: React.FC = () => {
 
   const { error, data, fetchData } = useFetch<PostType[]>(fetchObj);
 
-  // Il fetch avviene solo se i post non sono stati precedentemente caricati
+  // Il fetch avviene solo se i post non sono stati precedentemente caricati e se è stato aggiunto un nuovo post
   useEffect(() => {
     if (!posts.length || newPostAdded) {
       fetchData();
       setNewPostAdded(false);
     }
-  }, [fetchData, posts, memoizedPosts]);
+  }, [fetchData, posts]);
 
   useEffect(() => {
     if (data) {
