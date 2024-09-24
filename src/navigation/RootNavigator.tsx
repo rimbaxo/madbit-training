@@ -6,7 +6,9 @@ import { Colors, getToken } from '../constants';
 import React, { useEffect, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomHeader from '../components/CustomHeader';
+import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
+import { setAccessToken } from '../redux/authSlice';
 import { HomeStackParamList } from '../types';
 import LoginScreen from '../views/LoginScreen';
 import PostDetailsScreen from '../views/PostDetailsScreen';
@@ -17,13 +19,18 @@ const RootNavigator = () => {
   const Stack = createNativeStackNavigator<HomeStackParamList>();
   const accessToken = useAppSelector(state => state.auth.accessToken);
 
+  const dispatch = useAppDispatch();
+
+  console.log('ACCESS TOKEN', accessToken);
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
       const token = await getToken();
+      console.log('TOKEN STORAGE', token);
       if (token) {
-        setIsAuthenticated(true);
+        dispatch(setAccessToken(token));
       }
     };
     checkAuth();
@@ -45,7 +52,7 @@ const RootNavigator = () => {
       <StatusBar backgroundColor={backgroundStyle.backgroundColor} />
       <NavigationContainer>
         <Stack.Navigator>
-          {accessToken || isAuthenticated ? (
+          {accessToken ? (
             <>
               <Stack.Screen name="Home" component={UserNavigator} options={{ headerShown: false }} />
               <Stack.Screen

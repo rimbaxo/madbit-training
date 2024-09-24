@@ -35,7 +35,7 @@ const authSlice = createSlice({
       state.picture = action.payload.picture;
     },
     logout(state: AuthState) {
-      removeToken()
+      removeToken();
       state.accessToken = undefined;
       state.full_name = undefined;
       state.email = undefined;
