@@ -3,13 +3,16 @@ package com.mobile;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
+
 import android.os.Bundle;
+import com.zoontek.rnbootsplash.RNBootSplash;
 
 public class MainActivity extends ReactActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(null);
+    super.onCreate(null); // super.onCreate(null) with react-native-screens  
+    RNBootSplash.init(MainActivity.this, R.style.BootTheme);
   }
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule

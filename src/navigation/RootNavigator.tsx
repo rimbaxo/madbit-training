@@ -1,9 +1,9 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'react-native';
-import { Colors, getToken } from '../constants';
+import { Colors, getToken, hideSplashScreen } from '../constants';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomHeader from '../components/CustomHeader';
 import { useAppDispatch } from '../hooks/useAppDispatch';
@@ -21,14 +21,9 @@ const RootNavigator = () => {
 
   const dispatch = useAppDispatch();
 
-  console.log('ACCESS TOKEN', accessToken);
-
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   useEffect(() => {
     const checkAuth = async () => {
       const token = await getToken();
-      console.log('TOKEN STORAGE', token);
       if (token) {
         dispatch(setAccessToken(token));
       }
@@ -37,6 +32,9 @@ const RootNavigator = () => {
   }, []);
 
   const insets = useSafeAreaInsets();
+
+  // TODO: https://github.com/zoontek/react-native-bootsplash
+  // Quando ho access token tolgo la splash screen
 
   const backgroundStyle = {
     flex: 1,
@@ -50,7 +48,7 @@ const RootNavigator = () => {
   return (
     <>
       <StatusBar backgroundColor={backgroundStyle.backgroundColor} />
-      <NavigationContainer>
+      <NavigationContainer onReady={() => hideSplashScreen()}>
         <Stack.Navigator>
           {accessToken ? (
             <>

@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
+import { Platform, StatusBar } from 'react-native';
+import RNBootSplash from 'react-native-bootsplash';
 
 export const Colors = {
   lightRose: '#f4afc2',
@@ -78,5 +79,15 @@ export const removeToken = async () => {
     await AsyncStorage.removeItem('authToken');
   } catch (e) {
     console.error('Errore durante la rimozione del token:', e);
+  }
+};
+
+export const hideSplashScreen = () => {
+  console.log('RNBootSplash', RNBootSplash);
+  RNBootSplash.hide({ fade: true });
+  console.log('ENTRO');
+  if (Platform.OS === 'android') {
+    StatusBar.setTranslucent(true);
+    StatusBar.setBackgroundColor('transparent');
   }
 };

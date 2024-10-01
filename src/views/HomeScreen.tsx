@@ -1,9 +1,10 @@
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Filter from '../components/Filter';
 import PostList from '../components/PostList';
 import { Colors, ENDPOINT_GETME } from '../constants';
 import { useAppDispatch } from '../hooks/useAppDispatch';
@@ -14,6 +15,8 @@ import { FetchParams, GetMeType, HomeNavigationProp } from '../types';
 const HomeScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
+
+  const [filterVisible, setFilterVisible] = useState(false);
 
   const navigation = useNavigation<HomeNavigationProp>();
 
@@ -63,6 +66,13 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={backgroundStyle}>
+      <View style={styles.filterButtonContainer}>
+        <Pressable style={styles.newPostButton} onPress={() => setFilterVisible(!filterVisible)}>
+          <FontAwesomeIcon icon={faFilter} color={Colors.backgroundSurfaces} />
+        </Pressable>
+      </View>
+      <View></View>
+      {filterVisible ? <Filter /> : null}
       <View style={styles.newPostButtonContainer}>
         <Pressable style={styles.newPostButton} onPress={() => navigation.navigate('PostUpdate', { action: 'POST' })}>
           <FontAwesomeIcon icon={faPlus} color={Colors.backgroundSurfaces} />
@@ -104,6 +114,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 80,
     right: 0,
+    elevation: 5,
+    zIndex: 5,
+    shadowColor: Colors.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4
+  },
+  filterButtonContainer: {
+    paddingLeft: 16,
     elevation: 5,
     zIndex: 5,
     shadowColor: Colors.dark,

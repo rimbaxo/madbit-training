@@ -1,4 +1,6 @@
 #import "AppDelegate.h"
+#import "RNBootSplash.h"
+
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
@@ -129,5 +131,17 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 }
 
 #endif
+
+
+// Add this before file @end (for react-native < 0.74) zoontek splashscreen 
+- (UIView *)createRootViewWithBridge:(RCTBridge *)bridge
+                          moduleName:(NSString *)moduleName
+                           initProps:(NSDictionary *)initProps {
+  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+                                                   moduleName:moduleName
+                                            initialProperties:initProps];
+  [RNBootSplash initWithStoryboard:@"LaunchScreen" rootView:rootView]; // ⬅️ initialize the splash screen
+  return rootView;
+}
 
 @end

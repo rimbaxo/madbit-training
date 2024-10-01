@@ -1,8 +1,10 @@
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
 import { Pressable, PressableProps, StyleSheet, Text } from 'react-native';
 import { Colors } from '../constants';
 
-type ButtonVariant = 'ANNULLA';
+type ButtonVariant = 'ANNULLA' | 'ICON';
 
 type CustomButtonProps = PressableProps & {
   title: string;
@@ -24,6 +26,7 @@ const Button: React.FC<CustomButtonProps> = ({ title, onPress, variant }) => {
         }
       ]}
     >
+      {variant === 'ICON' ? <FontAwesomeIcon icon={faPlus} color={Colors.backgroundSurfaces} /> : null}
       <Text style={styles.buttonText}>{title}</Text>
     </Pressable>
   );
@@ -31,6 +34,8 @@ const Button: React.FC<CustomButtonProps> = ({ title, onPress, variant }) => {
 
 const styles = StyleSheet.create({
   button: {
+    display: 'flex',
+    flexDirection: 'row',
     width: '50%',
     paddingVertical: 12,
     paddingHorizontal: 24,

@@ -51,11 +51,13 @@ const PostUpdateScreen: React.FC = () => {
     text: newText
   };
 
+  // TODO: evita la action e usa solo l'id per capire se è un nuovo post o un'update
   const fetchPostUpdate: FetchParams<PostInfo> = {
     endpoint: action === 'PUT' ? ENDPOINT_POST + '/' + id?.toString() : ENDPOINT_POST,
     method: action,
     body
   };
+
   const { loading, error, data, fetchData } = useFetch<PostType, PostInfo>(fetchPostUpdate);
 
   const handleUpdatePost = async () => {
